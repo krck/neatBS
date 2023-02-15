@@ -204,6 +204,10 @@ export class UnitService {
             if (rowData[0] === "Abilities") {
                 for (let idx = 1; idx < rows.length; idx++) {
                     const row = rows[idx].td;
+                    const name = getCleanString(row[0]['#text'] ?? row[0]);
+                    if (name.includes("Stratagem:"))
+                        continue;
+
                     unit.abilities.push({
                         name: getCleanString(row[0]['#text'] ?? row[0]),
                         description: getCleanString(row[1]['#text'] ?? row[1]),
