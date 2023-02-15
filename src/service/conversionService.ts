@@ -39,13 +39,13 @@ export class ConversionService {
             // Rewrite the default abilities (Angles of Death!)
             if (unit.abilities.find(a => a.name.includes("Angels of Death"))) {
                 // Add the two "Angles of Death" rules that every model has
+                // unit.abilities.push({
+                //     name: "Astartes: Shall Know No Fear",
+                //     description: "If a Combat Attrition test is taken, ignore all modifiers",
+                //     ref: "Rule"
+                // });
                 unit.abilities.push({
-                    name: "And They Shall Know No Fear",
-                    description: "Each time a Combat Attrition test is taken for this unit, ignore any or all modifiers",
-                    ref: "Rule"
-                });
-                unit.abilities.push({
-                    name: "Shock Assault",
+                    name: "Astartes: Shock Assault",
                     description: "If this unit made a charge, was charged or performed a Heroic Intervention this turn, then until that fight is resolved, add 1 to the Attacks characteristic",
                     ref: "Rule"
                 });
@@ -60,23 +60,28 @@ export class ConversionService {
                 const hasHeavy = (unit.weapons.find(w => w.type.startsWith("Heavy")) !== undefined);
                 const hasMelee = (unit.weapons.find(w => w.type.startsWith("Melee")) !== undefined);
                 if (hasRapidFire && hasBolter) {
-                    unit.abilities.push({ name: "Bolter Discipline", description: "Rapid Fire Bolt weapons make double the attacks if 1) Target is within half weapon range 2) Model is Infantry (not Centurion) and remained stationary 3) Model is Terminator or Biker", ref: "Rules" });
+                    unit.abilities.push({ name: "Astartes: Bolter Discipline", description: "Rapid Fire Bolt weapons make double the attacks if 1) Target is within half weapon range 2) Model is Infantry (not Centurion) and remained stationary 3) Model is Terminator or Biker", ref: "Rules" });
                 }
                 // Add the Combat Doctrines, but only if the Units have specific Weapons
                 if (hasHeavy || hasGrenade) {
-                    unit.abilities.push({ name: "Devastator Doctrine", description: "Round 1: Improve AP of every Heavy and Grenade weapon by 1.", ref: "Doctrine" });
+                    unit.abilities.push({ name: "Astartes: Devastator Doctrine", description: "Round 1: Improve AP of every Heavy and Grenade weapon by 1.", ref: "Doctrine" });
                 }
                 if (hasAssault || hasRapidFire) {
-                    unit.abilities.push({ name: "Tactical Doctrine", description: "Round 2 (optional Round 3): Improve AP of every Rapid Fire and Assault weapon by 1.", ref: "Doctrine" });
+                    unit.abilities.push({ name: "Astartes: Tactical Doctrine", description: "Round 2 (optional Round 3): Improve AP of every Rapid Fire and Assault weapon by 1.", ref: "Doctrine" });
                 }
                 if (hasPistol || hasMelee) {
-                    unit.abilities.push({ name: "Assault Doctrine", description: "Round 4 (optional Round 3): Improve AP of every Pistol and Melee weapon by 1.", ref: "Doctrine" });
+                    unit.abilities.push({ name: "Astartes: Assault Doctrine", description: "Round 4 (optional Round 3): Improve AP of every Pistol and Melee weapon by 1.", ref: "Doctrine" });
                 }
 
                 // Remove the "Angles of Death" rule
-                const index = unit.abilities.findIndex(a => a.name.includes("Angels of Death"));
-                if (index > -1) {
-                    unit.abilities.splice(index, 1);
+                const aodIndex = unit.abilities.findIndex(a => a.name.includes("Angels of Death"));
+                if (aodIndex > -1) {
+                    unit.abilities.splice(aodIndex, 1);
+                }
+                // Remove the "Combat Squads" rule
+                const combatSquats = unit.abilities.findIndex(a => a.name.includes("Combat Squads"));
+                if (combatSquats > -1) {
+                    unit.abilities.splice(combatSquats, 1);
                 }
             }
         }
