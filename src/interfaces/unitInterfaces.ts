@@ -45,6 +45,7 @@ export interface Unit {
     pts: string;            // Points
     name: string;
     info: string;           // Infos like "Warlord" or "Chapter Command"
+    comp: string;           // Infos like "Intercessor Sergeant, 4x Intercessor"
     categories: string;     // List of keywords like "Core", "Infantry", "Vehicle", ...
     abilities: Ability[];
     stats: Stats[];

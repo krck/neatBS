@@ -38,6 +38,7 @@ export class UnitService {
                 // Update the unit data with categories, rules and infos (global rules will be added as abilites)
                 // Update the unit data with abilities, unit stats and weapon stats
                 unit = this.addUnitInfo(unitRaw, unit, rules);
+                unit = this.addUnitComposition(unitRaw, unit);
                 unit = this.addUnitStats(unitRaw, unit);
                 units.push(unit);
             }
@@ -58,7 +59,7 @@ export class UnitService {
             roleColors.set("Dedicated Transport", "#FCB6B6");
 
             // Body with one list (ul)
-            const cssStype = `<style>body.battlescribe{margin:0;padding:0;border-width:0}div.battlescribe{margin:0 auto;padding:0;border-width:0;font-family:sans-serif;font-size:12px;color:#444444;text-align:left}div.battlescribe h3,div.battlescribe h4{margin:0;padding:0;border-width:0;font-size:24px;font-weight:bold;}div.battlescribe ul{margin:0 0 0 10px;padding:0;border-width:0;list-style-image:none;list-style-position:outside;list-style-type:none}div.battlescribe li.rootselection{margin:0;padding:5px;border-width:2px;border-style:solid}div.battlescribe table{margin:12px 0 0;padding:0;border-collapse:collapse;font-size:12px;color:#444444;page-break-inside:avoid}div.battlescribe tr{border-width:1px;border-style:solid;border-color:#a1a1a1}div.battlescribe th{padding:4px;font-weight:bold;text-align:left}div.battlescribe td{padding:4px;text-align:left}tbody tr td:first-child{min-width:200px;word-break:break-all}div.battlescribe td.profile-name{font-weight:bold}</style>`;
+            const cssStype = `<style>body.battlescribe{margin:0;padding:0;border-width:0}div.battlescribe{margin:0 auto;padding:0;border-width:0;font-family:sans-serif;font-size:12px;color:#444444;text-align:left}div.battlescribe h3,div.battlescribe h4{margin:0;padding:0;border-width:0;font-size:24px;font-weight:bold;}div.battlescribe ul{margin:0 0 0 10px;padding:0;border-width:0;list-style-image:none;list-style-position:outside;list-style-type:none}div.battlescribe li.rootselection{margin:0;padding:5px;border-width:2px;border-style:solid}div.battlescribe table{margin:12px 0 0;padding:0;border-collapse:collapse;font-size:12px;color:#444444;page-break-inside:avoid}div.battlescribe tr{border-width:1px;border-style:solid;border-color:#a1a1a1}div.battlescribe th{padding:4px;font-weight:bold;text-align:left}div.battlescribe td{padding:4px;text-align:left}tbody tr td:first-child{min-width:200px;word-break:break-all}div.battlescribe td.profile-name{font-weight:bold}div.battlescribe span.bold {font-weight: bold;}div.battlescribe p.pSmall{margin:4 2px;}</style>`;
             htmlLines.push(`<html><head><meta name="viewport" content="width=600">${cssStype}</head>`);
             htmlLines.push(`<body class="battlescribe"><div class="battlescribe"><ul>`);
             for (const unit of units) {
@@ -66,7 +67,10 @@ export class UnitService {
                 // Header line with Section, Name and Points/Power
                 const info = (unit.info !== null && unit.info.length > 1 ? `(${unit.info}) ` : "");
                 htmlLines.push(`<h3>${unit.name} ${info}[${unit.pwr}p - ${unit.pts}pts] - ${unit.role}</h3>`);
-                htmlLines.push(`<p><span class="bold">Categories: </span>${unit.categories}</p>`);
+                htmlLines.push(`<p class="pSmall"><span class="bold">Categories: </span>${unit.categories}</p>`);
+                if (unit.comp.length)
+                    htmlLines.push(`<p class="pSmall"><span class="bold">Composition: </span>${unit.comp}</p>`);
+
                 // Abilities table
                 if (unit.abilities.length) {
                     htmlLines.push(`<table><tr bgColor="${roleColors.get(unit.role)}"><th>Abilities</th><th>Type</th><th>Description</th></tr>`);
@@ -120,6 +124,7 @@ export class UnitService {
             pts: name.substring(name.indexOf(",") + 1, name.indexOf("]")).replace("pts", "").trim(),
             name: name.substring(0, name.indexOf("[")).trim(),
             info: "",
+            comp: "",
             categories: "",
             abilities: new Array<Ability>(),
             stats: new Array<Stats>(),
@@ -158,6 +163,33 @@ export class UnitService {
                         ref: "Rule"
                     });
                 }
+            }
+        }
+        return unit;
+    }
+
+    private addUnitComposition(unitRaw: any, unit: Unit): Unit {
+        // Check if the unit even has some Composition information
+        if (unitRaw.ul !== undefined && unitRaw.ul.li !== undefined) {
+            let compRaw = unitRaw.ul.li;
+            if (!unitRaw.ul.li.length)
+                compRaw = new Array<any>({ ...compRaw });
+
+            // Extract all composition parts (e.g. "Intercessor Sergeant", "4x Intercessor") into an array
+            const compParts = new Array<string>();
+            for (const composition of compRaw) {
+                const tmpStr = getCleanString(composition.h4);
+                compParts.push((tmpStr.includes("[") ? tmpStr.substring(0, tmpStr.indexOf("[")) : tmpStr).trim());
+            }
+
+            // Remove all duplicates and count, if there are any
+            var uniqueComps = new Map<string, number>();
+            compParts.forEach(function (i) { uniqueComps.set(i, (uniqueComps.get(i) || 0) + 1); });
+
+            // Create the "comp" string. If a unit has no counter (e.g. "4x") then create one automatically
+            for (const uc of uniqueComps) {
+                const count = uc[1];
+                unit.comp += ((unit.comp.length ? ", " : "") + (count > 1 ? `${count}x ` : "") + uc[0]);
             }
         }
         return unit;
