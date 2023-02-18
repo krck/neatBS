@@ -98,7 +98,8 @@ export class UnitService {
                     for (const weapon of unit.weapons) {
                         htmlLines.push(`<tr>`);
                         htmlLines.push(`<td class="profile-name">${weapon.name}</td><td>${weapon.range}</td><td>${weapon.type}</td>`);
-                        htmlLines.push(`<td>${weapon.s}</td><td>${weapon.ap}</td><td>${weapon.d}</td><td>${weapon.abilities}</td><td>${weapon.info}</td>`);
+                        htmlLines.push(`<td>${(!weapon.s.startsWith("x") && !weapon.s.includes("User") && weapon.type === "Melee" ? "+" : "") + weapon.s}</td>`);
+                        htmlLines.push(`<td>${weapon.ap}</td><td>${weapon.d}</td><td>${weapon.abilities}</td><td>${weapon.info}</td>`);
                         htmlLines.push(`</tr>`);
                     }
                     htmlLines.push(`</table>`);
