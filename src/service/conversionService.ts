@@ -64,13 +64,13 @@ export class ConversionService {
                 }
                 // Add the Combat Doctrines, but only if the Units have specific Weapons
                 if (hasHeavy || hasGrenade) {
-                    unit.abilities.push({ name: "Astartes: Devastator Doctrine", description: "Round 1: Improve AP of every Heavy and Grenade weapon by 1.", ref: "Doctrine" });
+                    unit.abilities.push({ name: "Astartes: Devastator Doctrine", description: "Improve AP of every Heavy and Grenade weapon by 1.", ref: "Doctrine" });
                 }
                 if (hasAssault || hasRapidFire) {
-                    unit.abilities.push({ name: "Astartes: Tactical Doctrine", description: "Round 2 (optional Round 3): Improve AP of every Rapid Fire and Assault weapon by 1.", ref: "Doctrine" });
+                    unit.abilities.push({ name: "Astartes: Tactical Doctrine", description: "Improve AP of every Rapid Fire and Assault weapon by 1.", ref: "Doctrine" });
                 }
                 if (hasPistol || hasMelee) {
-                    unit.abilities.push({ name: "Astartes: Assault Doctrine", description: "Round 4 (optional Round 3): Improve AP of every Pistol and Melee weapon by 1.", ref: "Doctrine" });
+                    unit.abilities.push({ name: "Astartes: Assault Doctrine", description: "Improve AP of every Pistol and Melee weapon by 1.", ref: "Doctrine" });
                 }
 
                 // Remove the "Angles of Death" rule
