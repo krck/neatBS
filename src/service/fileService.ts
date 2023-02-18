@@ -9,6 +9,18 @@ export class FileService {
 
     //#region  Public Functions
 
+    public getHtmlFilesInFolder(folderPath: string): string[] {
+        if (folderPath === null || !folderPath)
+            return [];
+
+        const allFiles = new Array<string>();
+        fs.readdirSync(folderPath).forEach(file => {
+            if (file.includes(".html"))
+                allFiles.push(file);
+        });
+        return allFiles;
+    }
+
     public readHtmlFile(fileName: string): any {
         try {
             const fileRaw = getCleanString(fs.readFileSync(fileName, "utf8").replaceAll("<br>", ""));

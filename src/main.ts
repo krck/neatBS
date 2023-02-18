@@ -5,21 +5,32 @@ import { FileService } from "./service/fileService";
 
 function main(): boolean {
     try {
-        // 1. Read the HTML file and transform it into "any" json objects
-        const fullPath: string = "C:\\Users\\Peter\\Desktop\\1000p - Heavy.html";
-        const dataRaw = FileService.instance.readHtmlFile(fullPath);
+        // Get all files in a given path, parse them and output them to another path
+        const inputFolder: string = "C:\\Users\\Peter\\Desktop\\Rosters\\html";
+        const outputFolder: string = "C:\\Users\\Peter\\Desktop\\Rosters\\parsed";
+        const htmlFiles = FileService.instance.getHtmlFilesInFolder(inputFolder);
+        if (htmlFiles === undefined || !htmlFiles.length)
+            return false;
 
-        // 2. Parse rules and units into typed objects
-        const rules = RuleService.instance.parseRules(dataRaw);
-        const units = UnitService.instance.parseUnits(dataRaw, rules);
+        for (const htmlFile of htmlFiles) {
+            // 1. Read the HTML file and transform it into "any" json objects
+            const filePath = inputFolder + "\\" + htmlFile;
+            const dataRaw = FileService.instance.readHtmlFile(filePath);
 
-        // 3. Upgrade units, rules and abilities with any  kind of army specifics
-        ConversionService.instance.makeSpaceMarineChanges(units);
-        ConversionService.instance.makeImperialFistsChanges(units);
+            // 2. Parse rules and units into typed objects
+            const rules = RuleService.instance.parseRules(dataRaw);
+            const units = UnitService.instance.parseUnits(dataRaw, rules);
 
-        // 4. Create the HTML text and write the output file
-        const htmlContent = UnitService.instance.convertUnitsToHtml(units);
-        return FileService.instance.writeHtmlFile(fullPath.replace(".html", "_parsed.html"), htmlContent);
+            // 3. Upgrade units, rules and abilities with any  kind of army specifics
+            ConversionService.instance.makeSpaceMarineChanges(units);
+            ConversionService.instance.makeImperialFistsChanges(units);
+
+            // 4. Create the HTML text and write the output file
+            const htmlContent = UnitService.instance.convertUnitsToHtml(units);
+            const parsedFile = (outputFolder + "\\" + htmlFile).replace(".html", "_parsed.html");
+            const result = FileService.instance.writeHtmlFile(parsedFile, htmlContent);
+        }
+        return true;
     } catch (error) {
         console.log(error)
         return false;
