@@ -63,6 +63,9 @@ export class UnitService {
             htmlLines.push(`<html><head><meta name="viewport" content="width=600">${cssStype}</head>`);
             htmlLines.push(`<body class="battlescribe"><div class="battlescribe"><ul>`);
             for (const unit of units) {
+                // Get the role color (default = light grey)
+                const bgColor = roleColors.get(unit.role) ?? "#D8D8D8";
+
                 htmlLines.push(`<br><li class="rootselection">`);
                 // Header line with Section, Name and Points/Power
                 const info = (unit.info !== null && unit.info.length > 1 ? `(${unit.info}) ` : "");
@@ -73,7 +76,7 @@ export class UnitService {
 
                 // Abilities table
                 if (unit.abilities.length) {
-                    htmlLines.push(`<table><tr bgColor="${roleColors.get(unit.role)}"><th>Abilities</th><th>Type</th><th>Description</th></tr>`);
+                    htmlLines.push(`<table><tr bgColor="${bgColor}"><th>Abilities</th><th>Type</th><th>Description</th></tr>`);
                     for (const ability of unit.abilities) {
                         htmlLines.push(`<tr><td class="profile-name">${ability.name}</td><td><p>${ability.ref}</p></td><td><p>${ability.description}</p></td></tr>`);
                     }
@@ -82,7 +85,7 @@ export class UnitService {
                 // Unit Profile Table
                 if (unit.stats.length) {
                     htmlLines.push(`<table>`);
-                    htmlLines.push(`<tr bgColor="${roleColors.get(unit.role)}"><th>Unit</th><th>M</th><th>WS</th><th>BS</th><th>S</th><th>T</th><th>W</th><th>A</th><th>Ld</th><th>Save</th></tr>`);
+                    htmlLines.push(`<tr bgColor="${bgColor}"><th>Unit</th><th>M</th><th>WS</th><th>BS</th><th>S</th><th>T</th><th>W</th><th>A</th><th>Ld</th><th>Save</th></tr>`);
                     for (const stat of unit.stats) {
                         htmlLines.push(`<tr>`);
                         htmlLines.push(`<td class="profile-name">${stat.unit}</td><td>${stat.m}</td><td>${stat.ws}</td><td>${stat.bs}</td>`);
@@ -94,7 +97,7 @@ export class UnitService {
                 // Unit Weapons Table
                 if (unit.weapons.length) {
                     htmlLines.push(`<table>`);
-                    htmlLines.push(`<tr bgColor="${roleColors.get(unit.role)}"><th>Weapon</th><th>Range</th><th>Type</th><th>S</th><th>AP</th><th>D</th><th>Abilities</th><th>Info</th></tr>`);
+                    htmlLines.push(`<tr bgColor="${bgColor}"><th>Weapon</th><th>Range</th><th>Type</th><th>S</th><th>AP</th><th>D</th><th>Abilities</th><th>Info</th></tr>`);
                     for (const weapon of unit.weapons) {
                         htmlLines.push(`<tr>`);
                         htmlLines.push(`<td class="profile-name">${weapon.name}</td><td>${weapon.range}</td><td>${weapon.type}</td>`);
