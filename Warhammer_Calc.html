@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<style>
+    body {
+        font-family: 'Tahoma', sans-serif;
+    }
+
+    div.frame {
+        margin: 5px;
+        padding: 5px;
+        width: 500px;
+        border-radius: 5px;
+        border: 2px solid #ccc;
+    }
+
+    div.container {
+        display: flex;
+    }
+
+    div.child {
+        flex: 1;
+        margin: auto;
+    }
+
+    p {
+        margin: 0px 0px 5px 0px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    ul {
+        list-style: none;
+        width: 100%;
+        margin: auto;
+        padding: 0;
+    }
+
+    label {
+        display: inline-block;
+        width: 120px;
+        text-align: right;
+    }
+
+    input.number {
+        width: 50px;
+    }
+
+    select.list {
+        width: 58px;
+    }
+
+    input.check {
+        width: 20px;
+    }
+
+    button {
+        padding: 5px;
+        margin: 5px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    span {
+        padding: 5px;
+        text-align: center;
+        font-weight: bold;
+    }
+</style>
+<script>
+    function rollD6() { return (Math.floor(Math.random() * 6) + 1); }
+    function rollD3() { return (Math.floor(Math.random() * 3) + 1); }
+
+    function getWoundTarget(s, t) {
+        if (s >= (t * 2)) return 2;
+        else if (s > t) return 3;
+        else if (s == t) return 4;
+        else if (s <= (t / 2)) return 6;
+        else return 5;
+    }
+
+    function calculate() {
+        // Attacker input
+        const atk_A = Number(document.getElementById("atk_A").value);
+        const atk_HIT = Number(document.getElementById("atk_HIT").value);
+        const atk_S = Number(document.getElementById("atk_S").value);
+        const atk_AP = Number(document.getElementById("atk_AP").value);
+        const dValue = String(document.getElementById("akt_Ddropdown").value);
+        const has_Hit1 = Boolean(document.getElementById("has_Hit1").checked);
+        const has_HitFull = Boolean(document.getElementById("has_HitFull").checked);
+        const has_Wound1 = Boolean(document.getElementById("has_Wound1").checked);
+        const has_WoundFull = Boolean(document.getElementById("has_WoundFull").checked);
+        const has_Explode = Boolean(document.getElementById("has_Explode").checked);
+        const has_AutoWound = Boolean(document.getElementById("has_AutoWound").checked);
+
+        // Defender input
+        const def_T = Number(document.getElementById("def_T").value);
+        const def_Sv = Number(document.getElementById("def_Sv").value);
+        const def_HasInvul = Boolean(document.getElementById("def_HasInvul").checked);
+        const def_Invul = Number(document.getElementById("def_Invul").value);
+        const has_Ramshackle = Boolean(document.getElementById("has_Ramshackle").checked);
+        const has_Cover = Boolean(document.getElementById("has_Cover").checked);
+        const has_THuman = Boolean(document.getElementById("has_THuman").checked);
+
+        let allWounds = 0;
+        const calculations = 2000;
+        for (let calc = 1; calc <= calculations; calc++) {
+            let roundWounds = 0;
+            for (let a = 0; a < atk_A; a++) {
+                // Attack Hit Roll
+                let hitRoll = rollD6();
+                if ((hitRoll === 1 && has_Hit1 === true) || (hitRoll < atk_HIT && has_HitFull === true)) {
+                    hitRoll = rollD6();
+                }
+                if (has_Cover) {
+                    hitRoll -= 1;
+                }
+                // Attack Hit Result
+                if (hitRoll < atk_HIT) {
+                    continue; // no hit
+                }
+
+                // In case of exploding sixes: two wound rolls instead of one
+                const woundRolls = (has_Explode && hitRoll == 6 ? 2 : 1);
+                for (let w = 0; w < woundRolls; w++) {
+                    if (!(has_AutoWound && hitRoll == 6)) {
+                        // Attack Wound Roll
+                        const wound_TAR = getWoundTarget(atk_S, def_T);
+                        let woundRoll = rollD6();
+                        if ((woundRoll === 1 && has_Wound1 === true) || (woundRoll < wound_TAR && has_WoundFull === true)) {
+                            woundRoll = rollD6();
+                        }
+                        // Attack Wound Result
+                        if ((woundRoll < wound_TAR) || (has_THuman && woundRoll <= 3)) {
+                            continue; // no wound
+                        }
+                    }
+
+                    // Defender Save (or Invuln) Roll
+                    let save_TAR = (def_Sv + atk_AP);
+                    save_TAR = (def_HasInvul && (save_TAR > def_Invul) ? def_Invul : save_TAR);
+                    if (save_TAR <= 6) {
+                        const saveRoll = rollD6();
+                        if (saveRoll >= save_TAR) {
+                            continue; // saved
+                        }
+                    }
+
+                    // Attack Damage
+                    let atk_D = 0;
+                    switch (dValue) {
+                        case "D3": atk_D = rollD3(); break;
+                        case "D6": atk_D = rollD6(); break;
+                        case "D6+2": atk_D = rollD6() + 2; break;
+                        default: atk_D = Number(dValue); break;
+                    }
+
+                    // Add up the wounds
+                    roundWounds += (has_Ramshackle && atk_S < 8 && atk_D > 1) ? (atk_D - 1) : atk_D;
+                }
+            }
+            allWounds += roundWounds;
+        }
+
+        // Output the Wound average with two decimal places
+        const result = (allWounds / calculations).toFixed(2);
+        document.getElementById("resultW").innerHTML = result;
+    }
+</script>
+
+<body>
+    <div class="frame">
+        <p>ATTACKER</p>
+        <div class="container">
+            <div class="child">
+                <ul>
+                    <li> <label>A</label> <input class="number" id="atk_A" type="number" min="1" max="20" value="3" /> </li>
+                    <li> <label>Hit+</label> <input class="number" id="atk_HIT" type="number" min="1" max="6" value="3" /> </li>
+                    <li> <label>S</label> <input class="number" id="atk_S" type="number" min="1" max="20" value="5" /> </li>
+                    <li> <label>AP-</label> <input class="number" id="atk_AP" type="number" min="0" max="6" value="0" /> </li>
+                    <li>
+                        <label>D</label>
+                        <select class="list" id="akt_Ddropdown">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="D3">D3</option>
+                            <option value="D6">D6</option>
+                            <option value="D6+2">D6+2</option>
+                        </select>
+                    </li>
+                </ul>
+            </div>
+            <div class="child">
+                <ul>
+                    <li> <label>Hit 1 reroll</label> <input class="check" id="has_Hit1" type="checkbox" /> </li>
+                    <li> <label>Hit full reroll</label> <input class="check" id="has_HitFull" type="checkbox" /> </li>
+                    <li> <label>Wound 1 reroll</label> <input class="check" id="has_Wound1" type="checkbox" /> </li>
+                    <li> <label>Wound full reroll</label> <input class="check" id="has_WoundFull" type="checkbox" /> </li>
+                    <li> <label>6s Explode</label> <input class="check" id="has_Explode" type="checkbox" /> </li>
+                    <li> <label>6s Auto-Wound</label> <input class="check" id="has_AutoWound" type="checkbox" /> </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="frame">
+        <p>DEFENDER</p>
+        <div class="container">
+            <div class="child">
+                <ul>
+                    <li> <label>T</label> <input class="number" id="def_T" type="number" min="1" max="20" value="5" /> </li>
+                    <li> <label>Sv+</label> <input class="number" id="def_Sv" type="number" min="0" max="6" value="3" /> </li>
+                    <li> <label>Invul</label> <input class="number" id="def_Invul" type="number" min="0" max="6" value="5" /> <input class="check" id="def_HasInvul" type="checkbox" checked /> </li>
+                </ul>
+            </div>
+            <div class="child">
+                <ul>
+                    <li> <label>Ramshackle</label> <input class="check" id="has_Ramshackle" type="checkbox" /> </li>
+                    <li> <label>Light Cover</label> <input class="check" id="has_Cover" type="checkbox" /> </li>
+                    <li> <label>Transhuman</label> <input class="check" id="has_THuman" type="checkbox" /> </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="frame">
+        <div class="container">
+            <div class="child"> <button onclick="calculate()"> START CALC </button> </div>
+            <div class="child"> <span id="resultW"></span> <span>Wounds (avg.)</span> </div>
+        </div>
+    </div>
+</body>
+
+</html>
