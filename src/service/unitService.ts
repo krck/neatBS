@@ -215,7 +215,7 @@ export class UnitService {
                     unit.abilities.push({
                         name: getCleanString(row[0]['#text'] ?? row[0]),
                         description: getCleanString(row[1]['#text'] ?? row[1]),
-                        ref: getCleanString(row[2]['#text'] ?? row[2])
+                        ref: getCleanString(row.length > 2 ? (row[2]['#text'] ?? row[2]) : "")
                     });
                 }
             }
@@ -234,7 +234,7 @@ export class UnitService {
                         a: getCleanString(row[7]['#text'] ?? row[7]),
                         ld: getCleanString(row[8]['#text'] ?? row[8]),
                         save: getCleanString(row[9]['#text'] ?? row[9]),
-                        ref: getCleanString(row[10]['#text'] ?? row[10])
+                        ref: getCleanString(row.length > 10 ? (row[10]['#text'] ?? row[10]) : "")
                     });
                 }
             }
