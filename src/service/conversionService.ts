@@ -35,6 +35,15 @@ export class ConversionService {
             for (const ability of unit.abilities) {
                 ability.ref = (ability.description.includes("litany") ? "Litany" : ability.ref);
                 ability.ref = (ability.ref === undefined || ability.ref === null || !ability.ref ? "Ability" : ability.ref);
+
+                // Shorten some of the very long descriptions
+                switch (ability.name) {
+                    case "Honour or Death": ability.description = "This model is eligible to perform a Heroic Intervention if it is within 6\" horizontally and 5\" vertically"; break;
+                    case "Teleport Strike": ability.description = "Can deep strike in the reinforcement part of the Movement Phase, anywhere thats 9\" away from enemy models"; break;
+                    case "Death from Above": ability.description = "Can deep strike in the reinforcement part of the Movement Phase, anywhere thats 9\" away from enemy models"; break;
+                    case "Teleport Homer": ability.description = "Once per battle at the start of your Movement phase remove this unit, and in the NEXT Movement phase, set it up in your own demployment zone again"; break;
+                    default: break;
+                }
             }
             // Rewrite the default abilities (Angles of Death!)
             if (unit.abilities.find(a => a.name.includes("Angels of Death"))) {
@@ -62,7 +71,7 @@ export class ConversionService {
                 const hasHeavy = (unit.weapons.find(w => w.type.startsWith("Heavy")) !== undefined);
                 const hasMelee = (unit.weapons.find(w => w.type.startsWith("Melee")) !== undefined);
                 if (hasRapidFire && hasBolter) {
-                    unit.abilities.push({ name: "AoD: Bolter Discipline", description: "Rapid Fire Bolt weapons make double the attacks if <mark> 1) Target is within half weapon range 2) Model is Infantry (not Centurion) and remained stationary 3) Model is Terminator or Biker</mark>", ref: "Rules" });
+                    unit.abilities.push({ name: "AoD: Bolter Discipline", description: "Rapid Fire Bolt weapons make double attacks if <mark>1) Target is in half range 2) Model is Infantry (not Centurion) and remained stationary 3) Model is Terminator or Biker</mark>", ref: "Rules" });
                 }
                 // Add the Combat Doctrines, but only if the Units have specific Weapons
                 if ((hasHeavy || hasGrenade) && printBasics) {
