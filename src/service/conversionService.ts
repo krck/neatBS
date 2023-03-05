@@ -8,7 +8,7 @@ export class ConversionService {
     //#region  Public Functions
 
     // Make changes to the unit data, applicable to all kind of "Space Marine" lists
-    public makeSpaceMarineChanges(units: Unit[]) {
+    public makeSpaceMarineChanges(units: Unit[], printBasics: boolean = true) {
         for (const unit of units) {
             // Cleanup the unit table (e.g. shorten some unit names)
             for (const stat of unit.stats) {
@@ -39,16 +39,18 @@ export class ConversionService {
             // Rewrite the default abilities (Angles of Death!)
             if (unit.abilities.find(a => a.name.includes("Angels of Death"))) {
                 // Add the two "Angles of Death" rules that every model has
-                // unit.abilities.push({
-                //     name: "Astartes: Shall Know No Fear",
-                //     description: "If a Combat Attrition test is taken, ignore all modifiers",
-                //     ref: "Rule"
-                // });
-                unit.abilities.push({
-                    name: "Astartes: Shock Assault",
-                    description: "If this unit made a charge, was charged or performed a Heroic Intervention this turn, then until that fight is resolved, add 1 to the Attacks characteristic",
-                    ref: "Rule"
-                });
+                if (printBasics) {
+                    unit.abilities.push({
+                        name: "AoD: Shall Know No Fear",
+                        description: "If a Combat Attrition test is taken, ignore all modifiers",
+                        ref: "Rule"
+                    });
+                    unit.abilities.push({
+                        name: "AoD: Shock Assault",
+                        description: "If this unit made a charge, was charged or performed a Heroic Intervention this turn, then until that fight is resolved, add 1 to the Attacks characteristic",
+                        ref: "Rule"
+                    });
+                }
 
                 // Add the other rules that are weapons specific
                 // Check all weapon types the unit has and add the specific Doctrines and Bolter Discipline
@@ -60,17 +62,17 @@ export class ConversionService {
                 const hasHeavy = (unit.weapons.find(w => w.type.startsWith("Heavy")) !== undefined);
                 const hasMelee = (unit.weapons.find(w => w.type.startsWith("Melee")) !== undefined);
                 if (hasRapidFire && hasBolter) {
-                    unit.abilities.push({ name: "Astartes: Bolter Discipline", description: "Rapid Fire Bolt weapons make double the attacks if 1) Target is within half weapon range 2) Model is Infantry (not Centurion) and remained stationary 3) Model is Terminator or Biker", ref: "Rules" });
+                    unit.abilities.push({ name: "AoD: Bolter Discipline", description: "Rapid Fire Bolt weapons make double the attacks if <mark> 1) Target is within half weapon range 2) Model is Infantry (not Centurion) and remained stationary 3) Model is Terminator or Biker</mark>", ref: "Rules" });
                 }
                 // Add the Combat Doctrines, but only if the Units have specific Weapons
-                if (hasHeavy || hasGrenade) {
-                    unit.abilities.push({ name: "Astartes: Devastator Doctrine", description: "Improve AP of every Heavy and Grenade weapon by 1.", ref: "Doctrine" });
+                if ((hasHeavy || hasGrenade) && printBasics) {
+                    unit.abilities.push({ name: "AoD: Devastator Doctrine", description: "Improve AP of every Heavy and Grenade weapon by 1.", ref: "Doctrine" });
                 }
-                if (hasAssault || hasRapidFire) {
-                    unit.abilities.push({ name: "Astartes: Tactical Doctrine", description: "Improve AP of every Rapid Fire and Assault weapon by 1.", ref: "Doctrine" });
+                if ((hasAssault || hasRapidFire) && printBasics) {
+                    unit.abilities.push({ name: "AoD: Tactical Doctrine", description: "Improve AP of every Rapid Fire and Assault weapon by 1.", ref: "Doctrine" });
                 }
-                if (hasPistol || hasMelee) {
-                    unit.abilities.push({ name: "Astartes: Assault Doctrine", description: "Improve AP of every Pistol and Melee weapon by 1.", ref: "Doctrine" });
+                if ((hasPistol || hasMelee) && printBasics) {
+                    unit.abilities.push({ name: "AoD: Assault Doctrine", description: "Improve AP of every Pistol and Melee weapon by 1.", ref: "Doctrine" });
                 }
 
                 // Remove the "Angles of Death" rule
@@ -91,14 +93,21 @@ export class ConversionService {
     public makeImperialFistsChanges(units: Unit[]) {
         for (const unit of units) {
             // Bolter Rule - Exploding sixes
+            let hasHeavyS7 = false;
             for (const weapon of unit.weapons) {
                 const isBolter = (weapon.name.includes("bolt") || weapon.name.includes("Bolt"));
-                weapon.abilities = (isBolter ? ("IMPERIAL FIST: Exploding 6 " + weapon.abilities) : weapon.abilities);
+                weapon.abilities = (isBolter ? ("<mark><b>IMPERIAL FIST</b></mark>: Exploding 6 " + weapon.abilities) : weapon.abilities);
+
+                // Check if its a Heavy weapon with S7 or more
+                hasHeavyS7 = ((weapon.type.startsWith("Heavy") && Number(weapon.s) >= 7 ? true : false) || hasHeavyS7);
             }
             // ImpFist Doctrine bonus
-            for (const ability of unit.abilities) {
-                if (ability.name.startsWith("Devastator Doctrine"))
-                    ability.description += " - IMPERIAL FIST: For Heavy Weapons against Vehicle or Building +1 Damage";
+            if (hasHeavyS7) {
+                unit.abilities.push({
+                    name: "<mark>IMPERIAL FIST</mark>",
+                    description: "In Devastator Doctrine, add D+1 for Heavy weapons with S7 or more against Vehicles or Buildings",
+                    ref: "Doctrine"
+                })
             }
         }
     }
