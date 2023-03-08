@@ -104,8 +104,10 @@ export class ConversionService {
             // Bolter Rule - Exploding sixes
             let hasHeavyS7 = false;
             for (const weapon of unit.weapons) {
-                const isBolter = (weapon.name.includes("bolt") || weapon.name.includes("Bolt"));
-                weapon.abilities = (isBolter ? ("<mark><b>IMPERIAL FIST</b></mark>: Exploding 6 " + weapon.abilities) : weapon.abilities);
+                const isBolter = ((weapon.name.includes("bolt") || weapon.name.includes("Bolt")) && weapon.type !== "Melee");
+                weapon.abilities = (isBolter
+                    ? ("<mark><b>IMPERIAL FIST</b></mark>: Exploding 6 " + (weapon.abilities ? " - " : "") + weapon.abilities)
+                    : weapon.abilities);
 
                 // Check if its a Heavy weapon with S7 or more
                 hasHeavyS7 = ((weapon.type.startsWith("Heavy") && Number(weapon.s) >= 7 ? true : false) || hasHeavyS7);
