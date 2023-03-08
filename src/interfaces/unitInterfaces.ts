@@ -36,6 +36,13 @@ export interface Weapon {
     info: string;
 }
 
+export interface PsychicPower {
+    name: string;
+    warpCharge: string;
+    range: string;
+    details: string;
+}
+
 //
 // Main unit type
 //
@@ -47,7 +54,9 @@ export interface Unit {
     info: string;           // Infos like "Warlord" or "Chapter Command"
     comp: string;           // Infos like "Intercessor Sergeant, 4x Intercessor"
     categories: string;     // List of keywords like "Core", "Infantry", "Vehicle", ...
+    psycher: string;        // Additional Psycher info (if unit is a Psycher)
     abilities: Ability[];
     stats: Stats[];
     weapons: Weapon[];
+    powers: PsychicPower[];
 }

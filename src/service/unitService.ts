@@ -1,4 +1,4 @@
-import { Ability, Rule, Unit, Stats, Weapon } from "../interfaces/unitInterfaces";
+import { Ability, Rule, Unit, Stats, Weapon, PsychicPower } from "../interfaces/unitInterfaces";
 import { getCleanString } from "../common/helpers";
 
 export class UnitService {
@@ -82,6 +82,17 @@ export class UnitService {
                     }
                     htmlLines.push(`</table>`);
                 }
+                // Psyhic Powers table
+                if (unit.powers.length) {
+                    htmlLines.push(`<table><tr bgColor="${bgColor}"><th>Psychic Power</th><th>Warp Charge</th><th>Range</th><th>Details</th></tr>`);
+                    for (const power of unit.powers) {
+                        htmlLines.push(`<tr><td class="profile-name">${power.name}</td><td><p>${power.warpCharge}</p></td><td><p>${power.range}</p></td><td><p>${power.details}</p></td></tr>`);
+                    }
+                    if (unit.psycher) {
+                        htmlLines.push(`<tr><td class="profile-name">Psycher Stats</td><td></td><td></td><td><p><b>${unit.psycher}</b></p></td></tr>`)
+                    }
+                    htmlLines.push(`</table>`);
+                }
                 // Unit Profile Table
                 if (unit.stats.length) {
                     htmlLines.push(`<table>`);
@@ -130,9 +141,11 @@ export class UnitService {
             info: "",
             comp: "",
             categories: "",
+            psycher: "",
             abilities: new Array<Ability>(),
             stats: new Array<Stats>(),
             weapons: new Array<Weapon>(),
+            powers: new Array<PsychicPower>(),
         };
         return unit;
     }
@@ -253,6 +266,32 @@ export class UnitService {
                         info: "",
                     });
                 }
+            }
+            // Parse the Psychic Power tables rows (first row is the header)
+            else if (rowData[0] === "Psychic Power") {
+                for (let idx = 1; idx < rows.length; idx++) {
+                    const row = rows[idx].td;
+
+                    // Clear the Power number from the name (like "1)", "2)", ...)
+                    let name = getCleanString(row[0]['#text'] ?? row[0]);
+                    if (name.includes(")"))
+                        name = name.substring(name.indexOf(")") + 1, name.length).trim()
+
+                    unit.powers.push({
+                        name: name,
+                        warpCharge: getCleanString(row[1]['#text'] ?? row[1]),
+                        range: getCleanString(row[2]['#text'] ?? row[2]),
+                        details: getCleanString(row[3]['#text'] ?? row[3]),
+                    });
+                }
+            }
+            // Parse the Psycher table row (first row is the header)
+            else if (rowData[0] === "Psyker") {
+                const row = rows[1].td;
+                const casts = getCleanString(row[1]['#text'] ?? row[1]);
+                const deny = getCleanString(row[2]['#text'] ?? row[2]);
+                const discipline = getCleanString(row[3]['#text'] ?? row[3]);
+                unit.psycher = (`Cast: ${casts} | Deny: ${deny} | Power: ${discipline}`);
             }
         }
         return unit;
