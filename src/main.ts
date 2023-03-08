@@ -29,6 +29,9 @@ function main(): boolean {
             const htmlContent = UnitService.instance.convertUnitsToHtml(units);
             const parsedFile = (outputFolder + "\\" + htmlFile).replace(".html", "_parsed.html");
             const result = FileService.instance.writeHtmlFile(parsedFile, htmlContent);
+
+            // Small output on success
+            console.log(`[DONE] parsed file: "${htmlFile}" - unit count: ${units.length}`);
         }
         return true;
     } catch (error) {
