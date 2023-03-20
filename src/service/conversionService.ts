@@ -7,8 +7,8 @@ export class ConversionService {
 
     //#region  Public Functions
 
-    // Make changes to the unit data, applicable to all kind of "Space Marine" lists
-    public makeSpaceMarineChanges(units: Unit[], printBasics: boolean = true) {
+    // Make changes to the unit data, applicable to all kind of lists
+    public makeUniversalUnitChanges(units: Unit[], printBasics: boolean = true) {
         for (const unit of units) {
             // Cleanup the unit table (e.g. shorten some unit names)
             for (const stat of unit.stats) {
@@ -45,6 +45,12 @@ export class ConversionService {
                     default: break;
                 }
             }
+        }
+    }
+
+    // Make changes to the unit data, applicable to all kind of "Space Marine" lists
+    public makeSpaceMarineChanges(units: Unit[], printBasics: boolean = true) {
+        for (const unit of units) {
             // Rewrite the default abilities (Angles of Death!)
             if (unit.abilities.find(a => a.name.includes("Angels of Death"))) {
                 // Add the two "Angles of Death" rules that every model has
@@ -86,6 +92,47 @@ export class ConversionService {
 
                 // Remove the "Angles of Death" rule
                 const aodIndex = unit.abilities.findIndex(a => a.name.includes("Angels of Death"));
+                if (aodIndex > -1) {
+                    unit.abilities.splice(aodIndex, 1);
+                }
+                // Remove the "Combat Squads" rule
+                const combatSquats = unit.abilities.findIndex(a => a.name.includes("Combat Squads"));
+                if (combatSquats > -1) {
+                    unit.abilities.splice(combatSquats, 1);
+                }
+            }
+        }
+    }
+
+    // Make changes to the unit data, applicable to all kind of "Grey Knight" lists
+    public makeGreyKnightChanges(units: Unit[], printBasics: boolean = true) {
+        for (const unit of units) {
+            // Rewrite the default abilities (Knights of Titan!)
+            if (unit.abilities.find(a => a.name.includes("Knights of Titan"))) {
+                // Add the two "Knights of Titan" rules that every model has
+                if (printBasics) {
+                    unit.abilities.push({
+                        name: "KoT: Shall Know No Fear",
+                        description: "If a Combat Attrition test is taken, ignore all modifiers",
+                        ref: "Rule"
+                    });
+                    unit.abilities.push({
+                        name: "KoT: Masters of the Warp",
+                        description: "Tide of Convergence (offensive) or Tide of Shadows (defensive)",
+                        ref: "Tide"
+                    });
+                }
+
+                // Add the other rules that are weapons specific
+                // Check all weapon types the unit has and add the specific Doctrines and Bolter Discipline
+                const hasBolter = (unit.weapons.find(w => w.name.includes("bolt") || w.name.includes("Bolt")) !== undefined);
+                const hasRapidFire = (unit.weapons.find(w => w.type.startsWith("Rapid Fire")) !== undefined);
+                if (hasRapidFire && hasBolter) {
+                    unit.abilities.push({ name: "KoT: Bolter Discipline", description: "Rapid Fire Bolt weapons make double attacks if <mark>1) Target is in half range 2) Model is Infantry and remained stationary 3) Model is Terminator</mark>", ref: "Rules" });
+                }
+
+                // Remove the "Knights of Titan" rule
+                const aodIndex = unit.abilities.findIndex(a => a.name.includes("Knights of Titan"));
                 if (aodIndex > -1) {
                     unit.abilities.splice(aodIndex, 1);
                 }

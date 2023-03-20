@@ -12,12 +12,27 @@ export class RuleService {
         try {
             const rules = new Map<string, Rule>();
             const rulesDataRaw = bsDataRaw.html.head.body.div.div;
-            for (const ruleRaw of rulesDataRaw) {
-                for (const p of ruleRaw.p) {
+
+            // Check if data has multiple rules sections
+            // (e.g. "Force Rules" and "Selection Rules")
+            if (rulesDataRaw.length) {
+                for (const ruleRaw of rulesDataRaw) {
+                    for (const p of ruleRaw.p) {
+                        const ruleName = getCleanString(p['span']).replace(":", "");
+                        rules.set(ruleName, {
+                            name: ruleName,
+                            type: getCleanString(ruleRaw.h2),
+                            text: getCleanString(p['#text']).replace("()", "").trim()
+                        });
+                    }
+                }
+            }
+            else {
+                for (const p of rulesDataRaw.p) {
                     const ruleName = getCleanString(p['span']).replace(":", "");
                     rules.set(ruleName, {
                         name: ruleName,
-                        type: getCleanString(ruleRaw.h2),
+                        type: getCleanString(rulesDataRaw.h2),
                         text: getCleanString(p['#text']).replace("()", "").trim()
                     });
                 }
@@ -29,4 +44,5 @@ export class RuleService {
     }
 
     //#endregion
+
 }
