@@ -127,14 +127,19 @@ export class ConversionService {
                 // Add the two "Knights of Titan" rules that every model has
                 if (printBasics) {
                     unit.abilities.push({
-                        name: "KoT: Shall Know No Fear",
-                        description: "If a Combat Attrition test is taken, ignore all modifiers",
-                        ref: "Rule"
+                        name: "KoT: Masters of the Warp",
+                        description: "Tide of Convergence: +6\" to Psi-Weapon range | Melee wound roll of 6 = 1 additional mortal wound",
+                        ref: "<mark>Tide</mark>"
                     });
                     unit.abilities.push({
                         name: "KoT: Masters of the Warp",
-                        description: "Tide of Convergence (offensive) or Tide of Shadows (defensive)",
-                        ref: "Tide"
+                        description: "Tide of Shadows: If a ranged attack is more then 12\" away -> Light Cover",
+                        ref: "<mark>Tide</mark>"
+                    });
+                    unit.abilities.push({
+                        name: "KoT: Shall Know No Fear",
+                        description: "If a Combat Attrition test is taken, ignore all modifiers",
+                        ref: "Rule"
                     });
                 }
 
@@ -157,6 +162,12 @@ export class ConversionService {
                     unit.abilities.splice(combatSquats, 1);
                 }
             }
+            // Add the Aegis Detachment ability
+            unit.abilities.push({
+                name: "KoT: Aegis",
+                description: "<mark>Mortal Wound 'feel no pain' on 5+ | +1 to all Deny the Witch tests a Psycher does</mark>",
+                ref: "Rule"
+            });
         }
     }
 
