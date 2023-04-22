@@ -1,0 +1,89 @@
+{
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    // https://eslint.org/docs/latest/rules/
+    // 0 = off, 1 = warning, 2 = error
+    "rules": {
+        "no-console": 2,
+        "@typescript-eslint/no-unused-vars": 0,
+        "@typescript-eslint/no-explicit-any": 0,
+        "quotes": [
+            1,
+            "double"
+        ],
+        // Semicolon rules (always add all semicolons)
+        "semi": [
+            "error",
+            "always",
+            {
+                "omitLastInOneLineBlock": false
+            }
+        ],
+        "semi-style": [
+            "error",
+            "last"
+        ],
+        "no-extra-semi": [
+            "error"
+        ],
+        "semi-spacing": [
+            "error",
+            {
+                "before": false,
+                "after": true
+            }
+        ],
+        // Whitespace rules (all warnings)
+        "no-trailing-spaces": 1,
+        "no-multiple-empty-lines": [
+            1,
+            {
+                "max": 1
+            }
+        ],
+        "no-mixed-spaces-and-tabs": [
+            1,
+            "smart-tabs"
+        ],
+        "no-multi-spaces": [
+            1,
+            {
+                "ignoreEOLComments": true
+            }
+        ],
+        "indent": [
+            1,
+            4,
+            {
+                "ignoredNodes": [
+                    "PropertyDefinition"
+                ],
+                "SwitchCase": 1
+            }
+        ],
+        // Import declarations (all warnings)
+        "sort-imports": [
+            1,
+            {
+                "ignoreCase": false,
+                "ignoreDeclarationSort": true, // auto-fix not supported (dangerous)
+                "ignoreMemberSort": false,
+                "memberSyntaxSortOrder": [
+                    "multiple",
+                    "single",
+                    "all",
+                    "none"
+                ],
+                "allowSeparatedGroups": false
+            }
+        ]
+    }
+}

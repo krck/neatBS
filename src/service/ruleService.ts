@@ -18,28 +18,28 @@ export class RuleService {
             if (rulesDataRaw.length) {
                 for (const ruleRaw of rulesDataRaw) {
                     for (const p of ruleRaw.p) {
-                        const ruleName = getCleanString(p['span']).replace(":", "");
+                        const ruleName = getCleanString(p["span"]).replace(":", "");
                         rules.set(ruleName, {
                             name: ruleName,
                             type: getCleanString(ruleRaw.h2),
-                            text: getCleanString(p['#text']).replace("()", "").trim()
+                            text: getCleanString(p["#text"]).replace("()", "").trim()
                         });
                     }
                 }
             }
             else {
                 for (const p of rulesDataRaw.p) {
-                    const ruleName = getCleanString(p['span']).replace(":", "");
+                    const ruleName = getCleanString(p["span"]).replace(":", "");
                     rules.set(ruleName, {
                         name: ruleName,
                         type: getCleanString(rulesDataRaw.h2),
-                        text: getCleanString(p['#text']).replace("()", "").trim()
+                        text: getCleanString(p["#text"]).replace("()", "").trim()
                     });
                 }
             }
             return rules;
         } catch (error) {
-            throw new Error(`[RULES]: Error parsing rules: ${error}`)
+            throw new Error(`[RULES]: Error parsing rules: ${error}`);
         }
     }
 

@@ -6,8 +6,8 @@ import { FileService } from "./service/fileService";
 function main(): boolean {
     try {
         // Get all files in a given path, parse them and output them to another path
-        const inputFolder: string = "C:\\Users\\Peter\\Desktop\\Rosters\\html";
-        const outputFolder: string = "C:\\Users\\Peter\\Desktop\\Rosters\\parsed";
+        const inputFolder = "C:\\Users\\Peter\\Desktop\\Rosters\\html";
+        const outputFolder = "C:\\Users\\Peter\\Desktop\\Rosters\\parsed";
         const htmlFiles = FileService.instance.getHtmlFilesInFolder(inputFolder);
         if (htmlFiles === undefined || !htmlFiles.length)
             return false;
@@ -37,11 +37,13 @@ function main(): boolean {
             const result = FileService.instance.writeHtmlFile(parsedFile, htmlContent);
 
             // Small output on success
+            // eslint-disable-next-line no-console
             console.log(`[DONE] parsed file: "${htmlFile}" - unit count: ${units.length}`);
         }
         return true;
     } catch (error) {
-        console.log(error)
+        // eslint-disable-next-line no-console
+        console.log(error);
         return false;
     }
 }

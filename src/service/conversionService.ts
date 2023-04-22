@@ -8,7 +8,7 @@ export class ConversionService {
     //#region  Public Functions
 
     // Make changes to the unit data, applicable to all kind of lists
-    public makeUniversalUnitChanges(units: Unit[], printBasics: boolean = true) {
+    public makeUniversalUnitChanges(units: Unit[], printBasics = true) {
         for (const unit of units) {
             // Hightlight important Categories
             unit.categories = unit.categories.replace("Core", "<b>Core</b>");
@@ -64,7 +64,7 @@ export class ConversionService {
     }
 
     // Make changes to the unit data, applicable to all kind of "Space Marine" lists
-    public makeSpaceMarineChanges(units: Unit[], printBasics: boolean = true) {
+    public makeSpaceMarineChanges(units: Unit[], printBasics = true) {
         for (const unit of units) {
             // Rewrite the default abilities (Angles of Death!)
             if (unit.abilities.find(a => a.name.includes("Angels of Death"))) {
@@ -120,7 +120,7 @@ export class ConversionService {
     }
 
     // Make changes to the unit data, applicable to all kind of "Grey Knight" lists
-    public makeGreyKnightChanges(units: Unit[], printBasics: boolean = true) {
+    public makeGreyKnightChanges(units: Unit[], printBasics = true) {
         for (const unit of units) {
             // Rewrite the default abilities (Knights of Titan!)
             if (unit.abilities.find(a => a.name.includes("Knights of Titan"))) {
@@ -191,7 +191,7 @@ export class ConversionService {
                     name: "<mark>IMPERIAL FIST</mark>",
                     description: "In Devastator Doctrine, add D+1 for Heavy weapons with S7 or more against Vehicles or Buildings",
                     ref: "Doctrine"
-                })
+                });
             }
         }
     }

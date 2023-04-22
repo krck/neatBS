@@ -27,7 +27,7 @@ export class FileService {
             const fileContentParsed: any = new parser.XMLParser().parse(fileRaw);
             return fileContentParsed;
         } catch (error) {
-            throw new Error(`[FILE]: Error reading file: ${error}`)
+            throw new Error(`[FILE]: Error reading file: ${error}`);
         }
     }
 
@@ -36,7 +36,7 @@ export class FileService {
             fs.writeFileSync(fileName, fileContent.join(""));
             return true;
         } catch (error) {
-            throw new Error(`[FILE]: Error writing file: ${error}`)
+            throw new Error(`[FILE]: Error writing file: ${error}`);
         }
     }
 
