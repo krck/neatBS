@@ -10,6 +10,11 @@ export class ConversionService {
     // Make changes to the unit data, applicable to all kind of lists
     public makeUniversalUnitChanges(units: Unit[], printBasics: boolean = true) {
         for (const unit of units) {
+            // Hightlight important Categories
+            unit.categories = unit.categories.replace("Core", "<b>Core</b>");
+            unit.categories = unit.categories.replace("Infantry", "<b>Infantry</b>");
+            unit.categories = unit.categories.replace("Vehicle", "<b>Vehicle</b>");
+            unit.categories = unit.categories.replace("Character", "<b>Character</b>");
             // Cleanup the unit table (e.g. shorten some unit names)
             for (const stat of unit.stats) {
                 stat.unit = stat.unit.replace("[1]", "").replace("[2]", "").replace("[3]", "").replace("[4]", "");
@@ -30,6 +35,16 @@ export class ConversionService {
                 weapon.info = (weapon.type.startsWith("Grenade") ? "One model in unit can use it" : weapon.info);
                 weapon.info = (weapon.type.startsWith("Pistol") ? "Can shoot in Engagement Range" : weapon.info);
                 weapon.info = (weapon.type.startsWith("Heavy") ? "If unit moved then -1 to hit" : weapon.info);
+            }
+            // Remove the "Grenades" weapons
+            const fragGrenade = unit.weapons.findIndex(a => a.name.includes("Frag grenade"));
+            if (fragGrenade > -1) {
+                unit.weapons.splice(fragGrenade, 1);
+            }
+            // Remove the "Grenades" weapons
+            const krakGrenade = unit.weapons.findIndex(a => a.name.includes("Krak grenade"));
+            if (krakGrenade > -1) {
+                unit.weapons.splice(krakGrenade, 1);
             }
             // Cleanup the ability table
             for (const ability of unit.abilities) {

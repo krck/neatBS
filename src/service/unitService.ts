@@ -59,7 +59,7 @@ export class UnitService {
             roleColors.set("Dedicated Transport", "#FCB6B6");
 
             // Body with one list (ul)
-            const cssStype = `<style>body.battlescribe{margin:0;padding:0;border-width:0}div.battlescribe{margin:0 auto;padding:0;border-width:0;font-family:sans-serif;font-size:12px;color:#444444;text-align:left}div.battlescribe h3,div.battlescribe h4{margin:0;padding:0;border-width:0;font-size:24px;font-weight:bold;}div.battlescribe ul{margin:0 0 0 10px;padding:0;border-width:0;list-style-image:none;list-style-position:outside;list-style-type:none}div.battlescribe li.rootselection{margin:0;padding:5px;border-width:2px;border-style:solid}div.battlescribe table{margin:12px 0 0;padding:0;border-collapse:collapse;font-size:12px;color:#444444;page-break-inside:avoid}div.battlescribe tr{border-width:1px;border-style:solid;border-color:#a1a1a1}div.battlescribe th{padding:4px;font-weight:bold;text-align:left}div.battlescribe td{padding:4px;text-align:left}tbody tr td:first-child{min-width:200px;word-break:break-all}div.battlescribe td.profile-name{font-weight:bold}div.battlescribe span.bold {font-weight: bold;}div.battlescribe p.pSmall{margin:4 2px;}</style>`;
+            const cssStype = `<style>body.battlescribe{margin:0;padding:0;border-width:0}div.battlescribe{margin:0 auto;padding:0;border-width:0;font-family:sans-serif;font-size:14px;color:#444444;text-align:left}div.battlescribe h3,div.battlescribe h4{margin:0;padding:0;border-width:0;font-size:32px;font-weight:bold;}div.battlescribe ul{margin:0 0 0 10px;padding:0;border-width:0;list-style-image:none;list-style-position:outside;list-style-type:none}div.battlescribe li.rootselection{height:1000px;width:1400px;margin:0;padding:10px;border-width:2px;border-style:solid}div.battlescribe table{margin:14px 0 0;padding:0;border-collapse:collapse;font-size:14px;color:#444444;page-break-inside:avoid}div.battlescribe tr{border-width:1px;border-style:solid;border-color:#a1a1a1}div.battlescribe th{padding:4px;font-weight:bold;text-align:left}div.battlescribe td{padding:4px;text-align:left}tbody tr td:first-child{min-width:200px;word-break:break-all}div.battlescribe td.profile-name{font-weight:bold}div.battlescribe span.bold {font-weight: bold;}div.battlescribe p.pSmall{margin:4 2px;}</style>`;
             htmlLines.push(`<html><head><meta name="viewport" content="width=600">${cssStype}</head>`);
             htmlLines.push(`<body class="battlescribe"><div class="battlescribe"><ul>`);
             for (const unit of units) {
@@ -74,25 +74,6 @@ export class UnitService {
                 if (unit.comp.length)
                     htmlLines.push(`<p class="pSmall"><span class="bold">Composition: </span>${unit.comp}</p>`);
 
-                // Abilities table
-                if (unit.abilities.length) {
-                    htmlLines.push(`<table><tr bgColor="${bgColor}"><th>Abilities</th><th>Type</th><th>Description</th></tr>`);
-                    for (const ability of unit.abilities) {
-                        htmlLines.push(`<tr><td class="profile-name">${ability.name}</td><td><p>${ability.ref}</p></td><td><p>${ability.description}</p></td></tr>`);
-                    }
-                    htmlLines.push(`</table>`);
-                }
-                // Psyhic Powers table
-                if (unit.powers.length) {
-                    htmlLines.push(`<table><tr bgColor="${bgColor}"><th>Psychic Power</th><th>Warp Charge</th><th>Range</th><th>Details</th></tr>`);
-                    for (const power of unit.powers) {
-                        htmlLines.push(`<tr><td class="profile-name">${power.name}</td><td><p>${power.warpCharge}</p></td><td><p>${power.range}</p></td><td><p>${power.details}</p></td></tr>`);
-                    }
-                    if (unit.psycher) {
-                        htmlLines.push(`<tr><td class="profile-name">Psycher Stats</td><td></td><td></td><td><p><b>${unit.psycher}</b></p></td></tr>`)
-                    }
-                    htmlLines.push(`</table>`);
-                }
                 // Unit Profile Table
                 if (unit.stats.length) {
                     htmlLines.push(`<table>`);
@@ -107,14 +88,51 @@ export class UnitService {
                 }
                 // Unit Weapons Table
                 if (unit.weapons.length) {
-                    htmlLines.push(`<table>`);
-                    htmlLines.push(`<tr bgColor="${bgColor}"><th>Weapon</th><th>Range</th><th>Type</th><th>S</th><th>AP</th><th>D</th><th>Abilities</th><th>Info</th></tr>`);
+                    htmlLines.push(`<table style="width:100%">`);
+                    htmlLines.push(`<tr bgColor="${bgColor}">
+                                        <th style="width:20%">Weapon</th>
+                                        <th style="width:3%">Range</th>
+                                        <th style="width:7%">Type</th>
+                                        <th style="width:2%">S</th>
+                                        <th style="width:2%">AP</th>
+                                        <th style="width:2%">D</th>
+                                        <th style="width:50%">Abilities</th>
+                                        <th style="width:14%">Info</th>
+                                    </tr>`);
                     for (const weapon of unit.weapons) {
                         htmlLines.push(`<tr>`);
                         htmlLines.push(`<td class="profile-name">${weapon.name}</td><td>${weapon.range}</td><td>${weapon.type}</td>`);
                         htmlLines.push(`<td>${(!weapon.s.startsWith("x") && !weapon.s.includes("User") && weapon.type === "Melee" ? "+" : "") + weapon.s}</td>`);
                         htmlLines.push(`<td>${weapon.ap}</td><td>${weapon.d}</td><td>${weapon.abilities}</td><td>${weapon.info}</td>`);
                         htmlLines.push(`</tr>`);
+                    }
+                    htmlLines.push(`</table>`);
+                }
+                // Psyhic Powers table
+                if (unit.powers.length) {
+                    htmlLines.push(`<table style="width:100%"><tr bgColor="${bgColor}">
+                                        <th style="width:20%">Psychic Power</th>
+                                        <th style="width:8%">Warp Charge</th>
+                                        <th style="width:4%">Range</th>
+                                        <th style="width:68%">Details</th>
+                                    </tr>`);
+                    if (unit.psycher) {
+                        htmlLines.push(`<tr><td class="profile-name">Psycher Stats</td><td></td><td></td><td><p><b>${unit.psycher}</b></p></td></tr>`)
+                    }
+                    for (const power of unit.powers) {
+                        htmlLines.push(`<tr><td class="profile-name">${power.name}</td><td><p>${power.warpCharge}</p></td><td><p>${power.range}</p></td><td><p>${power.details}</p></td></tr>`);
+                    }
+                    htmlLines.push(`</table>`);
+                }
+                // Abilities table
+                if (unit.abilities.length) {
+                    htmlLines.push(`<table style="width:100%"><tr bgColor="${bgColor}">
+                                        <th style="width:20%">Abilities</th>
+                                        <th style="width:5%">Type</th>
+                                        <th style="width:75%">Description</th>
+                                    </tr>`);
+                    for (const ability of unit.abilities) {
+                        htmlLines.push(`<tr><td class="profile-name">${ability.name}</td><td><p>${ability.ref}</p></td><td><p>${ability.description}</p></td></tr>`);
                     }
                     htmlLines.push(`</table>`);
                 }
