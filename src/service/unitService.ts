@@ -71,8 +71,6 @@ export class UnitService {
                 const info = (unit.info !== null && unit.info.length > 1 ? `(${unit.info}) ` : "");
                 htmlLines.push(`<h3>${unit.name} ${info}[${unit.pwr}p - ${unit.pts}pts] - ${unit.role}</h3>`);
                 htmlLines.push(`<p class="pSmall"><span class="bold">Categories: </span>${unit.categories}</p>`);
-                if (unit.comp.length)
-                    htmlLines.push(`<p class="pSmall"><span class="bold">Composition: </span>${unit.comp}</p>`);
 
                 // Unit Profile Table
                 if (unit.stats.length) {
@@ -138,6 +136,16 @@ export class UnitService {
                 }
                 htmlLines.push("</li>");
             }
+
+            // Final DataCard with Army Comp
+            htmlLines.push("<br><li class=\"rootselection\">");
+            htmlLines.push("<h3>Army Composition</h3>");
+            htmlLines.push("<table style=\"width:100%\"><tr bgColor=\"#D8D8D8\"><th style=\"width:5%\">Type</th><th style=\"width:25%\">Name</th><th style=\"width:10%\">Pwr/Pts</th><th style=\"width:60%\">Composition</th></tr>");
+            for (const unit of units) {
+                htmlLines.push(`<tr><td class="profile-name">${unit.role}</td><td><p>${unit.name}</p></td><td><p>${unit.pwr}p - ${unit.pts}pts</p></td><td><p>${unit.comp}</p></td></tr>`);
+            }
+            htmlLines.push("</li>");
+
             htmlLines.push("</ul></div></body></html>");
             return htmlLines;
         } catch (error) {
