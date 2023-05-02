@@ -59,6 +59,33 @@ export class ConversionService {
                     case "Teleport Homer": ability.description = "Once per battle at the start of your Movement phase remove this unit, and in the NEXT Movement phase, set it up in your own demployment zone again"; break;
                     default: break;
                 }
+
+                // Green Marker
+                ability.description = this.markGreen(ability.description, "select one friendly");
+                ability.description = this.markGreen(ability.description, "heal one friendly");
+                ability.description = this.markGreen(ability.description, "Command phase");
+                ability.description = this.markGreen(ability.description, "Command Phase");
+                ability.description = this.markGreen(ability.description, "Movement phase");
+                ability.description = this.markGreen(ability.description, "Movement Phase");
+                ability.description = this.markGreen(ability.description, "Psychic phase");
+                ability.description = this.markGreen(ability.description, "Psychic Phase");
+                ability.description = this.markGreen(ability.description, "Shooting phase");
+                ability.description = this.markGreen(ability.description, "Shooting Phase");
+                ability.description = this.markGreen(ability.description, "Charge phase");
+                ability.description = this.markGreen(ability.description, "Charge Phase");
+                ability.description = this.markGreen(ability.description, "Fight phase");
+                ability.description = this.markGreen(ability.description, "Fight Phase");
+                // Orange Marker
+                ability.description = this.markOrange(ability.description, "wound is not lost");
+                ability.description = this.markOrange(ability.description, "re-roll");
+                ability.description = this.markOrange(ability.description, "re roll");
+                ability.description = this.markOrange(ability.description, "additional wound");
+                ability.description = this.markOrange(ability.description, "additional mortal wound");
+                // Blue Marker
+                ability.description = this.markBlue(ability.description, "invulnerable save");
+                ability.description = this.markBlue(ability.description, "armour saving throw");
+                // Pink Marker
+                ability.description = this.markPink(ability.description, "Once per battle");
             }
         }
     }
@@ -148,7 +175,7 @@ export class ConversionService {
                 const hasBolter = (unit.weapons.find(w => w.name.includes("bolt") || w.name.includes("Bolt")) !== undefined);
                 const hasRapidFire = (unit.weapons.find(w => w.type.startsWith("Rapid Fire")) !== undefined);
                 if (hasRapidFire && hasBolter) {
-                    unit.abilities.push({ name: "KoT: Bolter Discipline", description: "Rapid Fire Bolt weapons make double attacks if <mark>1) Target is in half range 2) Model is Infantry and remained stationary 3) Model is Terminator</mark>", ref: "Rules" });
+                    unit.abilities.push({ name: "KoT: Bolter Discipline", description: "Rapid Fire Bolt weapons make double attacks if 1) Target is in half range 2) Model is Infantry and remained stationary 3) Model is Terminator", ref: "Rules" });
                 }
 
                 // Remove the "Knights of Titan" rule
@@ -165,7 +192,7 @@ export class ConversionService {
             // Add the Aegis Detachment ability
             unit.abilities.push({
                 name: "KoT: Aegis",
-                description: "<mark>Mortal Wound 'feel no pain' on 5+ | +1 to all Deny the Witch tests a Psycher does</mark>",
+                description: "For each Mortal Wound roll one D6; on a 5+ that wound is not lost | Add 1 to all Deny the Witch tests taken for that Unit",
                 ref: "Rule"
             });
         }
@@ -194,6 +221,30 @@ export class ConversionService {
                 });
             }
         }
+    }
+
+    //#endregion
+
+    //#region Private Functions
+
+    private markGreen(input: string, textToMark: string): string {
+        const green = "<mark style=\"background:#c9ff94!important\">$txt$</mark>";
+        return input.replaceAll(textToMark, green.replace("$txt$", textToMark));
+    }
+
+    private markOrange(input: string, textToMark: string): string {
+        const green = "<mark style=\"background:#ffb094!important\">$txt$</mark>";
+        return input.replaceAll(textToMark, green.replace("$txt$", textToMark));
+    }
+
+    private markBlue(input: string, textToMark: string): string {
+        const green = "<mark style=\"background:#a3d1ff!important\">$txt$</mark>";
+        return input.replaceAll(textToMark, green.replace("$txt$", textToMark));
+    }
+
+    private markPink(input: string, textToMark: string): string {
+        const green = "<mark style=\"background:#dcadff!important\">$txt$</mark>";
+        return input.replaceAll(textToMark, green.replace("$txt$", textToMark));
     }
 
     //#endregion
