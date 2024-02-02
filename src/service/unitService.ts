@@ -19,11 +19,11 @@ export class UnitService {
             if (battlefieldRole.includes("Configuration"))
                 continue;
 
-            let unitDataRaw: any = rosterRaw.ul.li;
-            if (!unitDataRaw.length)
-                unitDataRaw = new Array<any>({ ...unitDataRaw });
+            let unitsDataRaw: any = rosterRaw.ul.li;
+            if (!unitsDataRaw.length)
+                unitsDataRaw = new Array<any>({ ...unitsDataRaw });
 
-            for (const unitRaw of unitDataRaw) {
+            for (const unitRaw of unitsDataRaw) {
                 // Create the basic unit data with name, points and power
                 let unit = this.createUnit(unitRaw, battlefieldRole);
 
@@ -69,17 +69,17 @@ export class UnitService {
                 htmlLines.push("<br><li class=\"rootselection\">");
                 // Header line with Section, Name and Points/Power
                 const info = (unit.info !== null && unit.info.length > 1 ? `(${unit.info}) ` : "");
-                htmlLines.push(`<h3>${unit.name} ${info}[${unit.pwr}p - ${unit.pts}pts] - ${unit.role}</h3>`);
+                htmlLines.push(`<h3>${unit.name} ${info}[${unit.pts}pts] - ${unit.role}</h3>`);
                 htmlLines.push(`<p class="pSmall"><span class="bold">Categories: </span>${unit.categories}</p>`);
 
                 // Unit Profile Table
                 if (unit.stats.length) {
                     htmlLines.push("<table>");
-                    htmlLines.push(`<tr bgColor="${bgColor}"><th>Unit</th><th>M</th><th>WS</th><th>BS</th><th>S</th><th>T</th><th>W</th><th>A</th><th>Ld</th><th>Save</th></tr>`);
+                    htmlLines.push(`<tr bgColor="${bgColor}"><th>Unit</th><th>M</th><th>T</th><th>Save</th><th>W</th><th>Ld</th><th>OC</th></tr>`);
                     for (const stat of unit.stats) {
                         htmlLines.push("<tr>");
-                        htmlLines.push(`<td class="profile-name">${stat.unit}</td><td>${stat.m}</td><td>${stat.ws}</td><td>${stat.bs}</td>`);
-                        htmlLines.push(`<td>${stat.s}</td><td>${stat.t}</td><td>${stat.w}</td><td>${stat.a}</td><td>${stat.ld}</td><td>${stat.save}</td>`);
+                        htmlLines.push(`<td class="profile-name">${stat.unit}</td><td>${stat.m}</td>`);
+                        htmlLines.push(`<td>${stat.t}</td><td>${stat.save}</td><td>${stat.w}</td><td>${stat.ld}</td><td>${stat.oc}</td>`);
                         htmlLines.push("</tr>");
                     }
                     htmlLines.push("</table>");
@@ -89,18 +89,19 @@ export class UnitService {
                     htmlLines.push("<table style=\"width:100%\">");
                     htmlLines.push(`<tr bgColor="${bgColor}">
                                         <th style="width:20%">Weapon</th>
-                                        <th style="width:3%">Range</th>
-                                        <th style="width:7%">Type</th>
+                                        <th style="width:7%">Range</th>
+                                        <th style="width:3%">A</th>
+                                        <th style="width:4%">WS/BS</th>
                                         <th style="width:2%">S</th>
                                         <th style="width:2%">AP</th>
                                         <th style="width:2%">D</th>
                                         <th style="width:50%">Abilities</th>
-                                        <th style="width:14%">Info</th>
+                                        <th style="width:10%">Info</th>
                                     </tr>`);
                     for (const weapon of unit.weapons) {
                         htmlLines.push("<tr>");
-                        htmlLines.push(`<td class="profile-name">${weapon.name}</td><td>${weapon.range}</td><td>${weapon.type}</td>`);
-                        htmlLines.push(`<td>${(!weapon.s.startsWith("x") && !weapon.s.includes("User") && weapon.type === "Melee" ? "+" : "") + weapon.s}</td>`);
+                        htmlLines.push(`<td class="profile-name">${weapon.name}</td><td>${weapon.range}</td><td>${weapon.a}</td><td>${weapon.skill}</td>`);
+                        htmlLines.push(`<td>${(!weapon.s.startsWith("x") && !weapon.s.includes("User") && weapon.range === "Melee" ? "+" : "") + weapon.s}</td>`);
                         htmlLines.push(`<td>${weapon.ap}</td><td>${weapon.d}</td><td>${weapon.abilities}</td><td>${weapon.info}</td>`);
                         htmlLines.push("</tr>");
                     }
@@ -142,7 +143,7 @@ export class UnitService {
             htmlLines.push("<h3>Army Composition</h3>");
             htmlLines.push("<table style=\"width:100%\"><tr bgColor=\"#D8D8D8\"><th style=\"width:5%\">Type</th><th style=\"width:25%\">Name</th><th style=\"width:10%\">Pwr/Pts</th><th style=\"width:60%\">Composition</th></tr>");
             for (const unit of units) {
-                htmlLines.push(`<tr><td class="profile-name">${unit.role}</td><td><p>${unit.name}</p></td><td><p>${unit.pwr}p - ${unit.pts}pts</p></td><td><p>${unit.comp}</p></td></tr>`);
+                htmlLines.push(`<tr><td class="profile-name">${unit.role}</td><td><p>${unit.name}</p></td><td><p>${unit.pts}pts</p></td><td><p>${unit.comp}</p></td></tr>`);
             }
             htmlLines.push("</li>");
 
@@ -161,8 +162,8 @@ export class UnitService {
         const name = getCleanString(unitRaw.h4).replace("-1CP,", "").replace("-2CP,", "");
         const unit: Unit = {
             role: battlefieldRole.substring(0, battlefieldRole.indexOf("[")).trim(),
-            pwr: name.substring(name.indexOf("[") + 1, name.indexOf(",")).replace("PL", "").trim(),
-            pts: name.substring(name.indexOf(",") + 1, name.indexOf("]")).replace("pts", "").trim(),
+            //pwr: name.substring(name.indexOf("[") + 1, name.indexOf(",")).replace("PL", "").trim(),
+            pts: name.substring(name.indexOf("[") + 1, name.indexOf("]")).replace("pts", "").trim(),
             name: name.substring(0, name.indexOf("[")).trim(),
             info: "",
             comp: "",
@@ -265,30 +266,28 @@ export class UnitService {
                     unit.stats.push({
                         unit: getCleanString(row[0]["#text"] ?? row[0]),
                         m: getCleanString(row[1]["#text"] ?? row[1]),
-                        ws: getCleanString(row[2]["#text"] ?? row[2]),
-                        bs: getCleanString(row[3]["#text"] ?? row[3]),
-                        s: getCleanString(row[4]["#text"] ?? row[4]),
-                        t: getCleanString(row[5]["#text"] ?? row[5]),
-                        w: getCleanString(row[6]["#text"] ?? row[6]),
-                        a: getCleanString(row[7]["#text"] ?? row[7]),
-                        ld: getCleanString(row[8]["#text"] ?? row[8]),
-                        save: getCleanString(row[9]["#text"] ?? row[9]),
-                        ref: getCleanString(row.length > 10 ? (row[10]["#text"] ?? row[10]) : "")
+                        t: getCleanString(row[2]["#text"] ?? row[2]),
+                        save: getCleanString(row[3]["#text"] ?? row[3]),
+                        w: getCleanString(row[4]["#text"] ?? row[4]),
+                        ld: getCleanString(row[5]["#text"] ?? row[5]),
+                        oc: getCleanString(row[6]["#text"] ?? row[6]),
+                        ref: getCleanString(row.length > 7 ? (row[7]["#text"] ?? row[7]) : "")
                     });
                 }
             }
             // Parse the Weapon tables rows (first row is the header)
-            else if (rowData[0] === "Weapon") {
+            else if (rowData[0] === "Melee Weapons" || rowData[0] === "Ranged Weapons") {
                 for (let idx = 1; idx < rows.length; idx++) {
                     const row = rows[idx].td;
                     unit.weapons.push({
                         name: getCleanString(row[0]["#text"] ?? row[0]),
                         range: getCleanString(row[1]["#text"] ?? row[1]),
-                        type: getCleanString(row[2]["#text"] ?? row[2]),
-                        s: getCleanString(row[3]["#text"] ?? row[3]),
-                        ap: getCleanString(row[4]["#text"] ?? row[4]),
-                        d: getCleanString(row[5]["#text"] ?? row[5]),
-                        abilities: getCleanString(row[6]["#text"] ?? row[6]),
+                        a: getCleanString(row[2]["#text"] ?? row[2]),
+                        skill: getCleanString(row[3]["#text"] ?? row[3]),
+                        s: getCleanString(row[4]["#text"] ?? row[4]),
+                        ap: getCleanString(row[5]["#text"] ?? row[5]),
+                        d: getCleanString(row[6]["#text"] ?? row[6]),
+                        abilities: getCleanString(row[7]["#text"] ?? row[7]),
                         info: "",
                     });
                 }

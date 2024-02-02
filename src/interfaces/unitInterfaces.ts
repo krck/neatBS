@@ -14,21 +14,19 @@ export interface Ability {
 export interface Stats {
     unit: string;
     m: string;
-    ws: string;
-    bs: string;
-    s: string;
     t: string;
-    w: string;
-    a: string;
-    ld: string;
     save: string;
+    w: string;
+    ld: string;
+    oc: string;
     ref: string;
 }
 
 export interface Weapon {
     name: string;
     range: string;
-    type: string;
+    a: string;
+    skill: string;
     s: string;
     ap: string;
     d: string;
@@ -48,7 +46,7 @@ export interface PsychicPower {
 //
 export interface Unit {
     role: string;           // HQ, Elite, Troops, ...
-    pwr: string;            // Power
+    //pwr: string;            // Power
     pts: string;            // Points
     name: string;
     info: string;           // Infos like "Warlord" or "Chapter Command"

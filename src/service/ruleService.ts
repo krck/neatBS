@@ -17,23 +17,41 @@ export class RuleService {
             // (e.g. "Force Rules" and "Selection Rules")
             if (rulesDataRaw.length) {
                 for (const ruleRaw of rulesDataRaw) {
-                    for (const p of ruleRaw.p) {
-                        const ruleName = getCleanString(p["span"]).replace(":", "");
+                    if (ruleRaw.p.length) {
+                        for (const p of ruleRaw.p) {
+                            const ruleName = getCleanString(p["span"]).replace(":", "");
+                            rules.set(ruleName, {
+                                name: ruleName,
+                                type: getCleanString(ruleRaw.h2),
+                                text: getCleanString(p["#text"]).replace("()", "").trim()
+                            });
+                        }
+                    } else {
+                        const ruleName = getCleanString(ruleRaw.p["span"]).replace(":", "");
                         rules.set(ruleName, {
                             name: ruleName,
                             type: getCleanString(ruleRaw.h2),
-                            text: getCleanString(p["#text"]).replace("()", "").trim()
+                            text: getCleanString(ruleRaw.p["#text"]).replace("()", "").trim()
                         });
                     }
                 }
             }
             else {
-                for (const p of rulesDataRaw.p) {
-                    const ruleName = getCleanString(p["span"]).replace(":", "");
+                if (rulesDataRaw.p.length) {
+                    for (const p of rulesDataRaw.p) {
+                        const ruleName = getCleanString(p["span"]).replace(":", "");
+                        rules.set(ruleName, {
+                            name: ruleName,
+                            type: getCleanString(rulesDataRaw.h2),
+                            text: getCleanString(p["#text"]).replace("()", "").trim()
+                        });
+                    }
+                } else {
+                    const ruleName = getCleanString(rulesDataRaw.p["span"]).replace(":", "");
                     rules.set(ruleName, {
                         name: ruleName,
                         type: getCleanString(rulesDataRaw.h2),
-                        text: getCleanString(p["#text"]).replace("()", "").trim()
+                        text: getCleanString(rulesDataRaw.p["#text"]).replace("()", "").trim()
                     });
                 }
             }

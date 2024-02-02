@@ -30,11 +30,11 @@ export class ConversionService {
                     weapon.abilities = "";
 
                 // Add short info about the specific weapon type
-                weapon.info = (weapon.type.startsWith("Rapid Fire") ? "Double shots if in half range" : weapon.info);
-                weapon.info = (weapon.type.startsWith("Assault") ? "Advance and shoot but -1 hit" : weapon.info);
-                weapon.info = (weapon.type.startsWith("Grenade") ? "One model in unit can use it" : weapon.info);
-                weapon.info = (weapon.type.startsWith("Pistol") ? "Can shoot in Engagement Range" : weapon.info);
-                weapon.info = (weapon.type.startsWith("Heavy") ? "If unit moved then -1 to hit" : weapon.info);
+                weapon.info = (weapon.abilities.startsWith("Rapid Fire") ? "Double shots if in half range" : weapon.info);
+                weapon.info = (weapon.abilities.startsWith("Assault") ? "Advance and shoot but -1 hit" : weapon.info);
+                weapon.info = (weapon.abilities.startsWith("Grenade") ? "One model in unit can use it" : weapon.info);
+                weapon.info = (weapon.abilities.startsWith("Pistol") ? "Can shoot in Engagement Range" : weapon.info);
+                weapon.info = (weapon.abilities.startsWith("Heavy") ? "If unit moved then -1 to hit" : weapon.info);
             }
             // Remove the "Grenades" weapons
             const fragGrenade = unit.weapons.findIndex(a => a.name.includes("Frag grenade"));
@@ -112,12 +112,12 @@ export class ConversionService {
                 // Add the other rules that are weapons specific
                 // Check all weapon types the unit has and add the specific Doctrines and Bolter Discipline
                 const hasBolter = (unit.weapons.find(w => w.name.includes("bolt") || w.name.includes("Bolt")) !== undefined);
-                const hasRapidFire = (unit.weapons.find(w => w.type.startsWith("Rapid Fire")) !== undefined);
-                const hasAssault = (unit.weapons.find(w => w.type.startsWith("Assault")) !== undefined);
-                const hasGrenade = (unit.weapons.find(w => w.type.startsWith("Grenade")) !== undefined);
-                const hasPistol = (unit.weapons.find(w => w.type.startsWith("Pistol")) !== undefined);
-                const hasHeavy = (unit.weapons.find(w => w.type.startsWith("Heavy")) !== undefined);
-                const hasMelee = (unit.weapons.find(w => w.type.startsWith("Melee")) !== undefined);
+                const hasRapidFire = (unit.weapons.find(w => w.abilities.startsWith("Rapid Fire")) !== undefined);
+                const hasAssault = (unit.weapons.find(w => w.abilities.startsWith("Assault")) !== undefined);
+                const hasGrenade = (unit.weapons.find(w => w.abilities.startsWith("Grenade")) !== undefined);
+                const hasPistol = (unit.weapons.find(w => w.abilities.startsWith("Pistol")) !== undefined);
+                const hasHeavy = (unit.weapons.find(w => w.abilities.startsWith("Heavy")) !== undefined);
+                const hasMelee = (unit.weapons.find(w => w.abilities.startsWith("Melee")) !== undefined);
                 if (hasRapidFire && hasBolter) {
                     unit.abilities.push({ name: "AoD: Bolter Discipline", description: "Rapid Fire Bolt weapons make double attacks if <mark>1) Target is in half range 2) Model is Infantry (not Centurion) and remained stationary 3) Model is Terminator or Biker</mark>", ref: "Rules" });
                 }
@@ -173,7 +173,7 @@ export class ConversionService {
                 // Add the other rules that are weapons specific
                 // Check all weapon types the unit has and add the specific Doctrines and Bolter Discipline
                 const hasBolter = (unit.weapons.find(w => w.name.includes("bolt") || w.name.includes("Bolt")) !== undefined);
-                const hasRapidFire = (unit.weapons.find(w => w.type.startsWith("Rapid Fire")) !== undefined);
+                const hasRapidFire = (unit.weapons.find(w => w.abilities.startsWith("Rapid Fire")) !== undefined);
                 if (hasRapidFire && hasBolter) {
                     unit.abilities.push({ name: "KoT: Bolter Discipline", description: "Rapid Fire Bolt weapons make double attacks if 1) Target is in half range 2) Model is Infantry and remained stationary 3) Model is Terminator", ref: "Rules" });
                 }
@@ -204,13 +204,13 @@ export class ConversionService {
             // Bolter Rule - Exploding sixes
             let hasHeavyS7 = false;
             for (const weapon of unit.weapons) {
-                const isBolter = ((weapon.name.includes("bolt") || weapon.name.includes("Bolt")) && weapon.type !== "Melee");
+                const isBolter = ((weapon.name.includes("bolt") || weapon.name.includes("Bolt")) && weapon.abilities !== "Melee");
                 weapon.abilities = (isBolter
                     ? ("<mark><b>IMPERIAL FIST</b></mark>: Exploding 6 " + (weapon.abilities ? " - " : "") + weapon.abilities)
                     : weapon.abilities);
 
                 // Check if its a Heavy weapon with S7 or more
-                hasHeavyS7 = ((weapon.type.startsWith("Heavy") && Number(weapon.s) >= 7 ? true : false) || hasHeavyS7);
+                hasHeavyS7 = ((weapon.abilities.startsWith("Heavy") && Number(weapon.s) >= 7 ? true : false) || hasHeavyS7);
             }
             // ImpFist Doctrine bonus
             if (hasHeavyS7) {
