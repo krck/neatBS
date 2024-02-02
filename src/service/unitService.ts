@@ -51,11 +51,12 @@ export class UnitService {
             const htmlLines = new Array<string>();
 
             const roleColors = new Map<string, string>();
-            roleColors.set("HQ", "#F9D39D");
-            roleColors.set("Troops", "#C8EFB3");
-            roleColors.set("Elites", "#BBCFF2");
-            roleColors.set("Fast Attack", "#FFF7BA");
-            roleColors.set("Heavy Support", "#C1AFE0");
+            roleColors.set("Epic Hero", "#F9D39D");
+            roleColors.set("Character", "#F9D39D");
+            roleColors.set("Battleline", "#C8EFB3");
+            roleColors.set("Infantry", "#BBCFF2");
+            roleColors.set("Monster", "#FFF7BA");
+            roleColors.set("Vehicle", "#C1AFE0");
             roleColors.set("Dedicated Transport", "#FCB6B6");
 
             // Body with one list (ul)
@@ -88,21 +89,20 @@ export class UnitService {
                 if (unit.weapons.length) {
                     htmlLines.push("<table style=\"width:100%\">");
                     htmlLines.push(`<tr bgColor="${bgColor}">
-                                        <th style="width:20%">Weapon</th>
+                                        <th style="width:25%">Weapon</th>
                                         <th style="width:7%">Range</th>
                                         <th style="width:3%">A</th>
                                         <th style="width:4%">WS/BS</th>
                                         <th style="width:2%">S</th>
                                         <th style="width:2%">AP</th>
                                         <th style="width:2%">D</th>
-                                        <th style="width:50%">Abilities</th>
-                                        <th style="width:10%">Info</th>
+                                        <th style="width:55%">Abilities</th>
                                     </tr>`);
                     for (const weapon of unit.weapons) {
                         htmlLines.push("<tr>");
                         htmlLines.push(`<td class="profile-name">${weapon.name}</td><td>${weapon.range}</td><td>${weapon.a}</td><td>${weapon.skill}</td>`);
                         htmlLines.push(`<td>${(!weapon.s.startsWith("x") && !weapon.s.includes("User") && weapon.range === "Melee" ? "+" : "") + weapon.s}</td>`);
-                        htmlLines.push(`<td>${weapon.ap}</td><td>${weapon.d}</td><td>${weapon.abilities}</td><td>${weapon.info}</td>`);
+                        htmlLines.push(`<td>${weapon.ap}</td><td>${weapon.d}</td><td>${weapon.abilities}</td>`);
                         htmlLines.push("</tr>");
                     }
                     htmlLines.push("</table>");
@@ -248,12 +248,15 @@ export class UnitService {
             if (rowData[0] === "Abilities") {
                 for (let idx = 1; idx < rows.length; idx++) {
                     const row = rows[idx].td;
-                    const name = getCleanString(row[0]["#text"] ?? row[0]);
+                    let name = getCleanString(row[0]["#text"] ?? row[0]);
                     if (name.includes("Stratagem:"))
                         continue;
 
+                    if (name.includes("Leader"))
+                        name = "Leader Char";
+
                     unit.abilities.push({
-                        name: getCleanString(row[0]["#text"] ?? row[0]),
+                        name: name,
                         description: getCleanString(row[1]["#text"] ?? row[1]),
                         ref: getCleanString(row.length > 2 ? (row[2]["#text"] ?? row[2]) : "")
                     });
@@ -288,7 +291,6 @@ export class UnitService {
                         ap: getCleanString(row[5]["#text"] ?? row[5]),
                         d: getCleanString(row[6]["#text"] ?? row[6]),
                         abilities: getCleanString(row[7]["#text"] ?? row[7]),
-                        info: "",
                     });
                 }
             }

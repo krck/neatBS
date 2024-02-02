@@ -14,51 +14,75 @@ export class ConversionService {
             unit.categories = unit.categories.replace("Core", "<b>Core</b>");
             unit.categories = unit.categories.replace("Infantry", "<b>Infantry</b>");
             unit.categories = unit.categories.replace("Vehicle", "<b>Vehicle</b>");
+            unit.categories = unit.categories.replace("Monster", "<b>Monster</b>");
             unit.categories = unit.categories.replace("Character", "<b>Character</b>");
+
             // Cleanup the unit table (e.g. shorten some unit names)
             for (const stat of unit.stats) {
                 stat.unit = stat.unit.replace("[1]", "").replace("[2]", "").replace("[3]", "").replace("[4]", "");
                 stat.unit = stat.unit.replace("wounds remaining", "wounds");
             }
+
             // Cleanup the weapon table (e.g. shorten some weapon names)
+            const weaponAbilities = new Map<string, string>();
             for (const weapon of unit.weapons) {
                 weapon.name = weapon.name.replace(", Frag missile", " (Frag)");
                 weapon.name = weapon.name.replace(", Krak missile", " (Krak)");
                 weapon.name = weapon.name.replace(", Standard", " (Standard)");
                 weapon.name = weapon.name.replace(", Supercharge", " (Supercharge)");
+                weapon.name = weapon.name.replace("➤", "");
                 if (weapon.abilities.length === 1 && weapon.abilities[0] === "-")
                     weapon.abilities = "";
 
                 // Add short info about the specific weapon type
-                weapon.info = (weapon.abilities.startsWith("Rapid Fire") ? "Double shots if in half range" : weapon.info);
-                weapon.info = (weapon.abilities.startsWith("Assault") ? "Advance and shoot but -1 hit" : weapon.info);
-                weapon.info = (weapon.abilities.startsWith("Grenade") ? "One model in unit can use it" : weapon.info);
-                weapon.info = (weapon.abilities.startsWith("Pistol") ? "Can shoot in Engagement Range" : weapon.info);
-                weapon.info = (weapon.abilities.startsWith("Heavy") ? "If unit moved then -1 to hit" : weapon.info);
+                weaponAbilities.set("Assault", "<b>Assault</b><i>: Advance and shoot</i>");
+                weaponAbilities.set("Ignores Cover", "<b>Ignores Cover</b>");
+                weaponAbilities.set("Twin-linked", "<b>Twin-linked</b><i>: Reroll Wound-roll</i>");
+                weaponAbilities.set("Pistol", "<b>Pistol</b><i>: Can shoot in Engagement Range</i>");
+                weaponAbilities.set("Torrent", "<b>Torrent</b><i>: Automatically hits</i>");
+                weaponAbilities.set("Lethal Hits", "<b>Lethal hits</b><i>: Auto-Wound on 6 hit-roll</i>");
+                weaponAbilities.set("Lance", "<b>Lance</b><i>: +1 Wound after Charge</i>");
+                weaponAbilities.set("Indirect Fire", "<b>Indirect Fire</b><i>: Target not-visible units, but -1 Hit and target has cover</i>");
+                weaponAbilities.set("Precision", "<b>Precision</b><i>: Can target visible Leader/Char of a unit</i>");
+                weaponAbilities.set("Blast", "<b>Blast</b><i>: +1 A for every 5 models targeted. Can not be used against engaged targets</i>");
+                weaponAbilities.set("Heavy", "<b>Heavy</b><i>: +1 to Hit if not moved</i>");
+                weaponAbilities.set("Hazardous", "<b>Hazardous</b><i>: D6 after shoot. On 1, model destroyed</i>");
+                weaponAbilities.set("Devastating Wounds", "<b>Devastating Wounds</b><i>: 6 wound-roll: no saving throws (no invuln)</i>");
+                weaponAbilities.set("Extra Attacks", "<b>Extra Attacks</b><i>: Can use this weapon in addition to any other</i>");
+                for (let index = 0; index < 10; index++) {
+                    weaponAbilities.set(`Melta ${index}`, `<b>Melta ${index}</b><i>: If half range D+${index}</i>`);
+                    weaponAbilities.set(`Rapid Fire ${index}`, `<b>Rapid Fire ${index}</b><i>: If half range A+${index}</i>`);
+                    weaponAbilities.set(`Sustained Hits ${index}`, `<b>Sustained Hits ${index}</b><i>: On 6 hit-roll, ${index} extra hit(s)</i>`);
+                    weaponAbilities.set(`Anti-vehicle ${index}+`, `<b>Anti-vehicle ${index}+</b><i>: Wound roll of ${index}+ is critical wound against Vehicle`);
+                    weaponAbilities.set(`Anti-infantry ${index}+`, `<b>Anti-infantry ${index}+</b><i>: Wound roll of ${index}+ is critical wound against Infantry`);
+                    weaponAbilities.set(`Anti-monster ${index}+`, `<b>Anti-monster ${index}+</b><i>: Wound roll of ${index}+ is critical wound against Monster`);
+                    weaponAbilities.set(`Anti-fly ${index}+`, `<b>Anti-fly ${index}+</b><i>: Wound roll of ${index}+ is critical wound against Fly`);
+                }
+
+                // Replace all the Weapon-Ability mappings
+                for (const wa of weaponAbilities) {
+                    weapon.abilities = weapon.abilities.replaceAll(wa[0], wa[1]);
+                }
             }
-            // Remove the "Grenades" weapons
-            const fragGrenade = unit.weapons.findIndex(a => a.name.includes("Frag grenade"));
-            if (fragGrenade > -1) {
-                unit.weapons.splice(fragGrenade, 1);
+
+            // Remove the default abilities
+            const leaderIndex = unit.abilities.findIndex(a => a.name === "Leader");
+            if (leaderIndex > -1) { unit.abilities.splice(leaderIndex, 1); }
+            for (const wa of weaponAbilities) {
+                const waIndex = unit.abilities.findIndex(a =>
+                    a.name.startsWith(wa[0])
+                    || a.name.startsWith("Melta ")
+                    || a.name.startsWith("Rapid Fire ")
+                    || a.name.startsWith("Sustained Hits ")
+                    || a.name.startsWith("Anti-")
+                );
+                if (waIndex > -1) { unit.abilities.splice(waIndex, 1); }
             }
-            // Remove the "Grenades" weapons
-            const krakGrenade = unit.weapons.findIndex(a => a.name.includes("Krak grenade"));
-            if (krakGrenade > -1) {
-                unit.weapons.splice(krakGrenade, 1);
-            }
+
             // Cleanup the ability table
             for (const ability of unit.abilities) {
                 ability.ref = (ability.description.includes("litany") ? "Litany" : ability.ref);
                 ability.ref = (ability.ref === undefined || ability.ref === null || !ability.ref ? "Ability" : ability.ref);
-
-                // Shorten some of the very long descriptions
-                switch (ability.name) {
-                    case "Honour or Death": ability.description = "This model is eligible to perform a Heroic Intervention if it is within 6\" horizontally and 5\" vertically"; break;
-                    case "Teleport Strike": ability.description = "Can deep strike in the reinforcement part of the Movement Phase, anywhere thats 9\" away from enemy models"; break;
-                    case "Death from Above": ability.description = "Can deep strike in the reinforcement part of the Movement Phase, anywhere thats 9\" away from enemy models"; break;
-                    case "Teleport Homer": ability.description = "Once per battle at the start of your Movement phase remove this unit, and in the NEXT Movement phase, set it up in your own demployment zone again"; break;
-                    default: break;
-                }
 
                 // Green Marker
                 ability.description = this.markGreen(ability.description, "select one friendly");
@@ -91,134 +115,17 @@ export class ConversionService {
     }
 
     // Make changes to the unit data, applicable to all kind of "Space Marine" lists
-    public makeSpaceMarineChanges(units: Unit[], printBasics = true) {
+    public makeSpaceMarineChanges(units: Unit[]) {
+        if (units.find(u => u.categories.includes("Adeptus Astartes")) === undefined)
+            return;
+
         for (const unit of units) {
             // Rewrite the default abilities (Angles of Death!)
-            if (unit.abilities.find(a => a.name.includes("Angels of Death"))) {
-                // Add the two "Angles of Death" rules that every model has
-                if (printBasics) {
-                    unit.abilities.push({
-                        name: "AoD: Shall Know No Fear",
-                        description: "If a Combat Attrition test is taken, ignore all modifiers",
-                        ref: "Rule"
-                    });
-                    unit.abilities.push({
-                        name: "AoD: Shock Assault",
-                        description: "If this unit made a charge, was charged or performed a Heroic Intervention this turn, then until that fight is resolved, add 1 to the Attacks characteristic",
-                        ref: "Rule"
-                    });
+            if (unit.abilities.find(a => a.name.includes("Oath of Moment"))) {
+                const oathsIndex = unit.abilities.findIndex(a => a.name.includes("Oath of Moment"));
+                if (oathsIndex > -1) {
+                    unit.abilities.splice(oathsIndex, 1);
                 }
-
-                // Add the other rules that are weapons specific
-                // Check all weapon types the unit has and add the specific Doctrines and Bolter Discipline
-                const hasBolter = (unit.weapons.find(w => w.name.includes("bolt") || w.name.includes("Bolt")) !== undefined);
-                const hasRapidFire = (unit.weapons.find(w => w.abilities.startsWith("Rapid Fire")) !== undefined);
-                const hasAssault = (unit.weapons.find(w => w.abilities.startsWith("Assault")) !== undefined);
-                const hasGrenade = (unit.weapons.find(w => w.abilities.startsWith("Grenade")) !== undefined);
-                const hasPistol = (unit.weapons.find(w => w.abilities.startsWith("Pistol")) !== undefined);
-                const hasHeavy = (unit.weapons.find(w => w.abilities.startsWith("Heavy")) !== undefined);
-                const hasMelee = (unit.weapons.find(w => w.abilities.startsWith("Melee")) !== undefined);
-                if (hasRapidFire && hasBolter) {
-                    unit.abilities.push({ name: "AoD: Bolter Discipline", description: "Rapid Fire Bolt weapons make double attacks if <mark>1) Target is in half range 2) Model is Infantry (not Centurion) and remained stationary 3) Model is Terminator or Biker</mark>", ref: "Rules" });
-                }
-                // Add the Combat Doctrines, but only if the Units have specific Weapons
-                if ((hasHeavy || hasGrenade) && printBasics) {
-                    unit.abilities.push({ name: "AoD: Devastator Doctrine", description: "Improve AP of every Heavy and Grenade weapon by 1.", ref: "Doctrine" });
-                }
-                if ((hasAssault || hasRapidFire) && printBasics) {
-                    unit.abilities.push({ name: "AoD: Tactical Doctrine", description: "Improve AP of every Rapid Fire and Assault weapon by 1.", ref: "Doctrine" });
-                }
-                if ((hasPistol || hasMelee) && printBasics) {
-                    unit.abilities.push({ name: "AoD: Assault Doctrine", description: "Improve AP of every Pistol and Melee weapon by 1.", ref: "Doctrine" });
-                }
-
-                // Remove the "Angles of Death" rule
-                const aodIndex = unit.abilities.findIndex(a => a.name.includes("Angels of Death"));
-                if (aodIndex > -1) {
-                    unit.abilities.splice(aodIndex, 1);
-                }
-                // Remove the "Combat Squads" rule
-                const combatSquats = unit.abilities.findIndex(a => a.name.includes("Combat Squads"));
-                if (combatSquats > -1) {
-                    unit.abilities.splice(combatSquats, 1);
-                }
-            }
-        }
-    }
-
-    // Make changes to the unit data, applicable to all kind of "Grey Knight" lists
-    public makeGreyKnightChanges(units: Unit[], printBasics = true) {
-        for (const unit of units) {
-            // Rewrite the default abilities (Knights of Titan!)
-            if (unit.abilities.find(a => a.name.includes("Knights of Titan"))) {
-                // Add the two "Knights of Titan" rules that every model has
-                if (printBasics) {
-                    unit.abilities.push({
-                        name: "KoT: Masters of the Warp",
-                        description: "Tide of Convergence: +6\" to Psi-Weapon range | Melee wound roll of 6 = 1 additional mortal wound",
-                        ref: "<mark>Tide</mark>"
-                    });
-                    unit.abilities.push({
-                        name: "KoT: Masters of the Warp",
-                        description: "Tide of Shadows: If a ranged attack is more then 12\" away -> Light Cover",
-                        ref: "<mark>Tide</mark>"
-                    });
-                    unit.abilities.push({
-                        name: "KoT: Shall Know No Fear",
-                        description: "If a Combat Attrition test is taken, ignore all modifiers",
-                        ref: "Rule"
-                    });
-                }
-
-                // Add the other rules that are weapons specific
-                // Check all weapon types the unit has and add the specific Doctrines and Bolter Discipline
-                const hasBolter = (unit.weapons.find(w => w.name.includes("bolt") || w.name.includes("Bolt")) !== undefined);
-                const hasRapidFire = (unit.weapons.find(w => w.abilities.startsWith("Rapid Fire")) !== undefined);
-                if (hasRapidFire && hasBolter) {
-                    unit.abilities.push({ name: "KoT: Bolter Discipline", description: "Rapid Fire Bolt weapons make double attacks if 1) Target is in half range 2) Model is Infantry and remained stationary 3) Model is Terminator", ref: "Rules" });
-                }
-
-                // Remove the "Knights of Titan" rule
-                const aodIndex = unit.abilities.findIndex(a => a.name.includes("Knights of Titan"));
-                if (aodIndex > -1) {
-                    unit.abilities.splice(aodIndex, 1);
-                }
-                // Remove the "Combat Squads" rule
-                const combatSquats = unit.abilities.findIndex(a => a.name.includes("Combat Squads"));
-                if (combatSquats > -1) {
-                    unit.abilities.splice(combatSquats, 1);
-                }
-            }
-            // Add the Aegis Detachment ability
-            unit.abilities.push({
-                name: "KoT: Aegis",
-                description: "For each Mortal Wound roll one D6; on a 5+ that wound is not lost | Add 1 to all Deny the Witch tests taken for that Unit",
-                ref: "Rule"
-            });
-        }
-    }
-
-    // Make changes to the unit data, specifically for Imperial Fists
-    public makeImperialFistsChanges(units: Unit[]) {
-        for (const unit of units) {
-            // Bolter Rule - Exploding sixes
-            let hasHeavyS7 = false;
-            for (const weapon of unit.weapons) {
-                const isBolter = ((weapon.name.includes("bolt") || weapon.name.includes("Bolt")) && weapon.abilities !== "Melee");
-                weapon.abilities = (isBolter
-                    ? ("<mark><b>IMPERIAL FIST</b></mark>: Exploding 6 " + (weapon.abilities ? " - " : "") + weapon.abilities)
-                    : weapon.abilities);
-
-                // Check if its a Heavy weapon with S7 or more
-                hasHeavyS7 = ((weapon.abilities.startsWith("Heavy") && Number(weapon.s) >= 7 ? true : false) || hasHeavyS7);
-            }
-            // ImpFist Doctrine bonus
-            if (hasHeavyS7) {
-                unit.abilities.push({
-                    name: "<mark>IMPERIAL FIST</mark>",
-                    description: "In Devastator Doctrine, add D+1 for Heavy weapons with S7 or more against Vehicles or Buildings",
-                    ref: "Doctrine"
-                });
             }
         }
     }

@@ -31,7 +31,6 @@ export interface Weapon {
     ap: string;
     d: string;
     abilities: string;
-    info: string;
 }
 
 export interface PsychicPower {

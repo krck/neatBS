@@ -22,13 +22,7 @@ function main(): boolean {
             const units = UnitService.instance.parseUnits(dataRaw, rules);
 
             // 3. Upgrade units, rules and abilities with any  kind of army specifics
-            // if (units.find(u => u.categories.includes("Adeptus Astartes")) !== undefined) {
-            //     ConversionService.instance.makeSpaceMarineChanges(units, false);
-            //     ConversionService.instance.makeImperialFistsChanges(units);
-            // }
-            // else if (units.find(u => u.categories.includes("Grey Knights")) !== undefined) {
-            //     ConversionService.instance.makeGreyKnightChanges(units, true);
-            // }
+            ConversionService.instance.makeSpaceMarineChanges(units);
             ConversionService.instance.makeUniversalUnitChanges(units, false);
 
             // 4. Create the HTML text and write the output file
