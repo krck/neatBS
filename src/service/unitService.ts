@@ -51,17 +51,17 @@ export class UnitService {
             const htmlLines = new Array<string>();
 
             const roleColors = new Map<string, string>();
-            roleColors.set("Epic Hero", "#F9D39D");
+            roleColors.set("Epic Hero", "#FFF7BA");
             roleColors.set("Character", "#F9D39D");
             roleColors.set("Battleline", "#C8EFB3");
             roleColors.set("Infantry", "#BBCFF2");
-            roleColors.set("Monster", "#FFF7BA");
+            roleColors.set("Monster", "#C1AFE0");
             roleColors.set("Vehicle", "#C1AFE0");
             roleColors.set("Dedicated Transport", "#FCB6B6");
 
             // Body with one list (ul)
-            const cssStype = "<style>body.battlescribe{margin:0;padding:0;border-width:0}div.battlescribe{margin:0 auto;padding:0;border-width:0;font-family:sans-serif;font-size:14px;color:#444444;text-align:left}div.battlescribe h3,div.battlescribe h4{margin:0;padding:0;border-width:0;font-size:32px;font-weight:bold;}div.battlescribe ul{margin:0 0 0 10px;padding:0;border-width:0;list-style-image:none;list-style-position:outside;list-style-type:none}div.battlescribe li.rootselection{height:640px;width:1400px;margin:10 0;padding:10px;border-width:2px;border-style:solid}div.battlescribe table{margin:14px 0 0;padding:0;border-collapse:collapse;font-size:14px;color:#444444;page-break-inside:avoid}div.battlescribe tr{border-width:1px;border-style:solid;border-color:#a1a1a1}div.battlescribe th{padding:4px;font-weight:bold;text-align:left}div.battlescribe td{padding:4px;text-align:left}tbody tr td:first-child{min-width:200px;word-break:break-all}div.battlescribe td.profile-name{font-weight:bold}div.battlescribe span.bold {font-weight: bold;}div.battlescribe p.pSmall{margin:4 2px;}</style>";
-            htmlLines.push(`<html><head><meta name="viewport" content="width=600">${cssStype}</head>`);
+            const cssStype = "<style>body.battlescribe{margin:0;padding:0;border-width:0}div.battlescribe{margin:0 auto;padding:0;border-width:0;font-family:sans-serif;font-size:14px;color:#444444;text-align:left}div.battlescribe h3,div.battlescribe h4{margin:0;padding:0;border-width:0;font-size:32px;font-weight:bold;}div.battlescribe ul{margin:0 0 0 10px;padding:0;border-width:0;list-style-image:none;list-style-position:outside;list-style-type:none}div.battlescribe li.rootselection{height:655px;width:1400px;margin:10px 0;padding: 0 12px 12px 12px;border-width:5px;border-radius:8px;border-style:solid}div.battlescribe table{margin:12px 0 0;padding:0;border-collapse:collapse;font-size:14px;color:#444444;page-break-inside:avoid}div.battlescribe tr{border-width:2px;border-style:solid;border-color:#a1a1a1}div.battlescribe th{padding:4px;font-weight:bold;text-align:left}div.battlescribe td{padding:4px;text-align:left}tbody tr td:first-child{min-width:200px;word-break:break-all}div.battlescribe td.profile-name{font-weight:bold}div.battlescribe span.bold {font-weight: bold;}div.battlescribe p.pSmall{margin:4 2px;}</style>";
+            htmlLines.push(`<html><head><meta name="viewport">${cssStype}</head>`);
             htmlLines.push("<body class=\"battlescribe\"><div class=\"battlescribe\"><ul>");
             for (const unit of units) {
                 // Get the role color (default = light grey)
@@ -70,13 +70,16 @@ export class UnitService {
                 htmlLines.push("<br><li class=\"rootselection\">");
                 // Header line with Section, Name and Points/Power
                 const info = (unit.info !== null && unit.info.length > 1 ? `(${unit.info}) ` : "");
-                htmlLines.push(`<h3>${unit.name} ${info}[${unit.pts}pts] - ${unit.role}</h3>`);
-                htmlLines.push(`<p class="pSmall"><span class="bold">Categories: </span>${unit.categories}</p>`);
+                htmlLines.push("<table style=\"width:100%\">");
+                htmlLines.push(`<tr bgColor="${bgColor}"><th><h3>${unit.name} ${info} - ${unit.role} - [${unit.pts}pts]</h3></th></tr>`);
+                htmlLines.push(`<tr><td><p class="pSmall"><span class="bold">Categories: </span>${unit.categories}</p></td></tr>`);
+                htmlLines.push("</table>");
 
                 // Unit Profile Table
                 if (unit.stats.length) {
+                    htmlLines.push("<div style=\"display: flex;\">");
                     htmlLines.push("<table>");
-                    htmlLines.push(`<tr bgColor="${bgColor}"><th>Unit</th><th>M</th><th>T</th><th>Save</th><th>W</th><th>Ld</th><th>OC</th></tr>`);
+                    htmlLines.push(`<tr bgColor="${bgColor}"><th>Unit</th><th>M</th><th>T</th><th>Sv</th><th>W</th><th>Ld</th><th>OC</th></tr>`);
                     for (const stat of unit.stats) {
                         htmlLines.push("<tr>");
                         htmlLines.push(`<td class="profile-name">${stat.unit}</td><td>${stat.m}</td>`);
@@ -84,7 +87,21 @@ export class UnitService {
                         htmlLines.push("</tr>");
                     }
                     htmlLines.push("</table>");
+                    if (unit.invulnSave) {
+                        htmlLines.push("<table style=\"margin-left: 5px;\">");
+                        htmlLines.push(`<tr bgColor="${bgColor}"><th>Invulnerable Save</th>`);
+                        htmlLines.push(`<tr><td>${unit.invulnSave}</td></tr>`);
+                        htmlLines.push("</table>");
+                    }
+                    if (unit.damaged) {
+                        htmlLines.push("<table style=\"margin-left: 5px;\">");
+                        htmlLines.push(`<tr bgColor="${bgColor}"><th>Damaged</th>`);
+                        htmlLines.push(`<tr><td>${unit.damaged}</td></tr>`);
+                        htmlLines.push("</table>");
+                    }
+                    htmlLines.push("</div>");
                 }
+
                 // Unit Weapons Table
                 if (unit.weapons.length) {
                     htmlLines.push("<table style=\"width:100%\">");
@@ -169,6 +186,8 @@ export class UnitService {
             comp: "",
             categories: "",
             psycher: "",
+            invulnSave: "",
+            damaged: "",
             abilities: new Array<Ability>(),
             stats: new Array<Stats>(),
             weapons: new Array<Weapon>(),
@@ -255,11 +274,18 @@ export class UnitService {
                     if (name.includes("Leader"))
                         name = "Leader Char";
 
-                    unit.abilities.push({
-                        name: name,
-                        description: getCleanString(row[1]["#text"] ?? row[1]),
-                        ref: getCleanString(row.length > 2 ? (row[2]["#text"] ?? row[2]) : "")
-                    });
+                    if (name.startsWith("Invulnerable Save")) {
+                        unit.invulnSave = getCleanString(row[1]["#text"] ?? row[1]);
+                    } else if (name.startsWith("Damaged:")) {
+                        unit.damaged = getCleanString(row[1]["#text"] ?? row[1]);
+                    } else {
+                        unit.abilities.push({
+                            name: name,
+                            description: getCleanString(row[1]["#text"] ?? row[1]),
+                            ref: getCleanString(row.length > 2 ? (row[2]["#text"] ?? row[2]) : "")
+                        });
+                    }
+
                 }
             }
             // Parse the Unit tables rows (first row is the header)

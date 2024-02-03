@@ -35,8 +35,9 @@ export class ConversionService {
                     weapon.abilities = "";
 
                 // Add short info about the specific weapon type
-                weaponAbilities.set("Assault", "<b>Assault</b><i>: Advance and shoot</i>");
+                weaponAbilities.set("One Shot", "<b>One Shot</b>");
                 weaponAbilities.set("Ignores Cover", "<b>Ignores Cover</b>");
+                weaponAbilities.set("Assault", "<b>Assault</b><i>: Advance and shoot</i>");
                 weaponAbilities.set("Twin-linked", "<b>Twin-linked</b><i>: Reroll Wound-roll</i>");
                 weaponAbilities.set("Pistol", "<b>Pistol</b><i>: Can shoot in Engagement Range</i>");
                 weaponAbilities.set("Torrent", "<b>Torrent</b><i>: Automatically hits</i>");
@@ -72,8 +73,8 @@ export class ConversionService {
                 const waIndex = unit.abilities.findIndex(a =>
                     a.name.startsWith(wa[0])
                     || a.name.startsWith("Melta ")
-                    || a.name.startsWith("Rapid Fire ")
-                    || a.name.startsWith("Sustained Hits ")
+                    || a.name.startsWith("Rapid Fire")
+                    || a.name.startsWith("Sustained Hits")
                     || a.name.startsWith("Anti-")
                 );
                 if (waIndex > -1) { unit.abilities.splice(waIndex, 1); }
