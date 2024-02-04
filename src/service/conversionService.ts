@@ -45,7 +45,7 @@ export class ConversionService {
                 weaponAbilities.set("Lance", "<b>Lance</b><i>: +1 Wound after Charge</i>");
                 weaponAbilities.set("Indirect Fire", "<b>Indirect Fire</b><i>: Target not-visible units, but -1 Hit and target has cover</i>");
                 weaponAbilities.set("Precision", "<b>Precision</b><i>: Can target visible Leader/Char of a unit</i>");
-                weaponAbilities.set("Blast", "<b>Blast</b><i>: +1 A for every 5 models targeted. Can not be used against engaged targets</i>");
+                weaponAbilities.set("Blast", "<b>Blast</b><i>: +1 A per 5 models, but no engaged targets!</i>");
                 weaponAbilities.set("Heavy", "<b>Heavy</b><i>: +1 to Hit if not moved</i>");
                 weaponAbilities.set("Hazardous", "<b>Hazardous</b><i>: D6 after shoot. On 1, model destroyed</i>");
                 weaponAbilities.set("Devastating Wounds", "<b>Devastating Wounds</b><i>: 6 wound-roll: no saving throws (no invuln)</i>");

@@ -1,4 +1,5 @@
 import { ConversionService } from "./service/conversionService";
+import { ExportService } from "./service/exportService";
 import { UnitService } from "./service/unitService";
 import { RuleService } from "./service/ruleService";
 import { FileService } from "./service/fileService";
@@ -18,6 +19,7 @@ function main(): boolean {
             const dataRaw = FileService.instance.readHtmlFile(filePath);
 
             // 2. Parse rules and units into typed objects
+            const armyDetach = RuleService.instance.getArmyAndDetachmentRules(dataRaw);
             const rules = RuleService.instance.parseRules(dataRaw);
             const units = UnitService.instance.parseUnits(dataRaw, rules);
 
@@ -26,7 +28,7 @@ function main(): boolean {
             ConversionService.instance.makeUniversalUnitChanges(units, false);
 
             // 4. Create the HTML text and write the output file
-            const htmlContent = UnitService.instance.convertUnitsToHtml(units);
+            const htmlContent = ExportService.instance.convertDataToHtml(armyDetach, units);
             const parsedFile = (outputFolder + "\\" + htmlFile).replace(".html", "_parsed.html");
             const result = FileService.instance.writeHtmlFile(parsedFile, htmlContent);
 

@@ -11,6 +11,11 @@ export interface Ability {
     ref: string;
 }
 
+export interface Selection {
+    name: string;
+    info: string;
+}
+
 export interface Stats {
     unit: string;
     m: string;
@@ -54,8 +59,11 @@ export interface Unit {
     psycher: string;        // Additional Psycher info (if unit is a Psycher)
     invulnSave: string;     // Treated as a Ability by BattleScribe
     damaged: string;
+    leaderInfo: string;
+    transportInfo: string;
     abilities: Ability[];
     stats: Stats[];
     weapons: Weapon[];
     powers: PsychicPower[];
+    selections: Selection[];
 }
