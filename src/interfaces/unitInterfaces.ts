@@ -57,7 +57,7 @@ export interface Unit {
     comp: string;           // Infos like "Intercessor Sergeant, 4x Intercessor"
     categories: string;     // List of keywords like "Core", "Infantry", "Vehicle", ...
     psycher: string;        // Additional Psycher info (if unit is a Psycher)
-    invulnSave: string;     // Treated as a Ability by BattleScribe
+    invulnSave: { inv: string, info: string };     // Treated as a Ability by BattleScribe
     damaged: string;
     leaderInfo: string;
     transportInfo: string;

@@ -31,9 +31,9 @@ export class FileService {
         }
     }
 
-    public writeHtmlFile(fileName: string, fileContent: string[]): boolean {
+    public writeHtmlFile(fileName: string, fileContent: string): boolean {
         try {
-            fs.writeFileSync(fileName, fileContent.join(""));
+            fs.writeFileSync(fileName, fileContent);
             return true;
         } catch (error) {
             throw new Error(`[FILE]: Error writing file: ${error}`);

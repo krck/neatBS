@@ -33,6 +33,15 @@
             font-size: 20px !important;
         }
 
+        body ul {
+            margin: 0 0 0 10px;
+            padding: 0;
+            border-width: 0;
+            list-style-image: none;
+            list-style-position: outside;
+            list-style-type: none
+        }
+
         .datacard {
             height: 655px;
             width: 1400px;
@@ -83,7 +92,7 @@
         .datacard-header-stats {
             display: flex;
             justify-content: flex-start;
-            margin-top: 10px;
+            margin-top: 15px;
             margin-left: 10px;
         }
 
@@ -93,8 +102,8 @@
         }
 
         .datacard-header-stats-item .value {
-            border: 3px solid #000000;
-            margin-top: -24px;
+            border: 4px solid #000000;
+            margin-top: -26px;
             padding-top: 14px;
             height: 34x;
             width: 48px;
@@ -113,35 +122,321 @@
             margin: 0px;
             padding: 0px;
         }
+
+        .datacard-content table {
+            margin: 12px 0 0;
+            padding: 0;
+            page-break-inside: avoid;
+            border-collapse: collapse;
+            color: #444444;
+        }
+
+        .datacard-content tr {
+            border-width: 1px;
+            border-style: solid;
+            border-color: #969696;
+        }
+
+        .datacard-content th {
+            padding: 4px;
+            font-weight: bold;
+            text-align: left
+        }
+
+        .datacard-content td {
+            padding: 4px;
+            text-align: left;
+        }
+
+        tbody tr td:first-child {
+            min-width: 200px;
+            word-break: break-all
+        }
+
+        .datacard-content td.profile-name {
+            font-weight: bold
+        }
     </style>
 </head>
 
 <body>
-    <div class="datacard">
-        <div class="datacard-header">
-            <span>
-                <h2 class="datacard-header-title">Data Card Title</h2>
-                <p class="datacard-header-category"><b>Categories:</b> Hero, Infantry, Imperium</p>
-                <div class="datacard-header-stats">
-                    <div class="datacard-header-stats-item">
-                        <div>M</div>
-                        <div class="value">6"</div>
-                    </div>
-                    <div class="datacard-header-stats-item">
-                        <div>S</div>
-                        <div class="value">5</div>
-                    </div>
-                    <div class="datacard-header-stats-item">
-                        <div>X</div>
-                        <div class="value">4</div>
+    <ul>
+        <li>
+            <div class="datacard">
+                <div class="datacard-header">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <span style="align-self: flex-start;">
+                            <h2 class="datacard-header-title">Unit Name</h2>
+                            <p class="datacard-header-category"><b>Categories:</b> Hero, Infantry, Imperium</p>
+                            <div class="datacard-header-stats">
+                                <div class="datacard-header-stats-item">
+                                    <div>M</div>
+                                    <div class="value">6"</div>
+                                </div>
+                                <div class="datacard-header-stats-item">
+                                    <div>T</div>
+                                    <div class="value">5</div>
+                                </div>
+                                <div class="datacard-header-stats-item">
+                                    <div>Sv</div>
+                                    <div class="value">4+</div>
+                                </div>
+                                <div class="datacard-header-stats-item">
+                                    <div>W</div>
+                                    <div class="value">3</div>
+                                </div>
+                                <div class="datacard-header-stats-item">
+                                    <div>Ld</div>
+                                    <div class="value">6+</div>
+                                </div>
+                                <div class="datacard-header-stats-item">
+                                    <div>OC</div>
+                                    <div class="value">2</div>
+                                </div>
+                                <!-- IF INVULN -->
+                                <div class="datacard-header-stats-item" style="margin-left: 40px;">
+                                    <div>Inv Sv</div>
+                                    <div class="value" style=" width: 60px !important;">4+</div>
+                                </div>
+                            </div>
+                        </span>
+                        <div style="align-self: flex-end; margin: 5px; height: 120px;">
+                            <h2 style="margin: 0px; padding: 0px; font-size: 40px;">Unit Type</h2>
+                            <h2 style="margin: 0px; padding: 0px; text-align: right; margin-top: 5px;">Points</h2>
+                        </div>
                     </div>
                 </div>
-            </span>
-        </div>
-        <div class="datacard-content">
-            <p>This is some content for the data datacard.</p>
-        </div>
-    </div>
+                <div class="datacard-content">
+                    <table style="width:100%">
+                        <tr bgColor="#f5f5f5">
+                            <th style="width:25%">Weapon</th>
+                            <th style="width:6%">Range</th>
+                            <th style="width:3%">A</th>
+                            <th style="width:5%">WS/BS</th>
+                            <th style="width:2%">S</th>
+                            <th style="width:2%">AP</th>
+                            <th style="width:2%">D</th>
+                            <th style="width:55%">Abilities</th>
+                        </tr>
+                        <!-- WEAPON TABLE -->
+                        <tr>
+                            <td class="profile-name">Fist of Dorn</td>
+                            <td>Melee</td>
+                            <td><b>5</b></td>
+                            <td><b>2+</b></td>
+                            <td><b>10</b></td>
+                            <td><b>-3</b></td>
+                            <td><b>3</b></td>
+                            <td style="font-size: 18px;"><b>Devastating Wounds</b><i>: 6 wound-roll: no saving throws
+                                    (no
+                                    invuln)</i></td>
+                        </tr>
+                    </table>
+                    <table style="width:100%">
+                        <tr bgColor="#f5f5f5">
+                            <th style="width:20%">Abilities</th>
+                            <th style="width:5%">Type</th>
+                            <th style="width:75%">Description</th>
+                        </tr>
+                        <tr>
+                            <td class="profile-name">Deep Strike</td>
+                            <td>
+                                <p>Rule</p>
+                            </td>
+                            <td>
+                                <p style="font-size: 18px;">During the Declare Battle Formations step, if
+                                    every model in a unit
+                                    has this ability, you
+                                    can set it up in Reserves instead of setting it up on the battlefield. If you do, in
+                                    the
+                                    Reinforcements step of one of your <mark
+                                        style="background:#c9ff94!important">Movement
+                                        phase</mark>s you can set up this unit anywhere on the battlefield that is more
+                                    than
+                                    9" horizontally away from all enemy models. (10th Edition Core Rules p39)</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="profile-name">Icon of Obstinacy</td>
+                            <td>
+                                <p>Ability</p>
+                            </td>
+                            <td>
+                                <p style="font-size: 18px;">While this model is leading a unit, each&#160;time an attack
+                                    targets
+                                    that unit, if the
+                                    Strength characteristic&#160;of that attack is greater than or equal to the
+                                    Toughness&#160;characteristic of that unit, subtract 1 from the Wound roll.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="profile-name">Rampart</td>
+                            <td>
+                                <p>Ability</p>
+                            </td>
+                            <td>
+                                <p style="font-size: 18px;"><mark style="background:#dcadff!important">Once per
+                                        battle</mark>,
+                                    at the start of any
+                                    phase, this&#160;model can use this ability. If it does, until the end of
+                                    the&#160;phase, this model has a 2+ <mark
+                                        style="background:#a3d1ff!important">invulnerable
+                                        save</mark>.</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr bgColor="#f5f5f5">
+                            <th>Leader</th>
+                        <tr>
+                            <td style="font-size: 18px;">This model can be attached to the following units:&#9632; Relic
+                                Terminator Squad&#9632;
+                                Terminator Assault Squad&#9632; Terminator Squad</td>
+                        </tr>
+                    </table>
+                    <div><!-- Darnath Lysander INFO --></div>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="datacard">
+                <div class="datacard-header">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <span style="align-self: flex-start;">
+                            <h2 class="datacard-header-title">Unit Name</h2>
+                            <p class="datacard-header-category"><b>Categories:</b> Hero, Infantry, Imperium</p>
+                            <div class="datacard-header-stats">
+                                <div class="datacard-header-stats-item">
+                                    <div>M</div>
+                                    <div class="value">6"</div>
+                                </div>
+                                <div class="datacard-header-stats-item">
+                                    <div>T</div>
+                                    <div class="value">5</div>
+                                </div>
+                                <div class="datacard-header-stats-item">
+                                    <div>Sv</div>
+                                    <div class="value">4+</div>
+                                </div>
+                                <div class="datacard-header-stats-item">
+                                    <div>W</div>
+                                    <div class="value">3</div>
+                                </div>
+                                <div class="datacard-header-stats-item">
+                                    <div>Ld</div>
+                                    <div class="value">6+</div>
+                                </div>
+                                <div class="datacard-header-stats-item">
+                                    <div>OC</div>
+                                    <div class="value">2</div>
+                                </div>
+                                <!-- IF INVULN -->
+                                <div class="datacard-header-stats-item" style="margin-left: 40px;">
+                                    <div>Inv Sv</div>
+                                    <div class="value" style=" width: 60px !important;">4+</div>
+                                </div>
+                            </div>
+                        </span>
+                        <div style="align-self: flex-end; margin: 5px; height: 120px;">
+                            <h2 style="margin: 0px; padding: 0px; font-size: 40px;">Unit Type</h2>
+                            <h2 style="margin: 0px; padding: 0px; text-align: right; margin-top: 5px;">Points</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="datacard-content">
+                    <table style="width:100%">
+                        <tr bgColor="#f5f5f5">
+                            <th style="width:25%">Weapon</th>
+                            <th style="width:6%">Range</th>
+                            <th style="width:3%">A</th>
+                            <th style="width:5%">WS/BS</th>
+                            <th style="width:2%">S</th>
+                            <th style="width:2%">AP</th>
+                            <th style="width:2%">D</th>
+                            <th style="width:55%">Abilities</th>
+                        </tr>
+                        <!-- WEAPON TABLE -->
+                        <tr>
+                            <td class="profile-name">Fist of Dorn</td>
+                            <td>Melee</td>
+                            <td><b>5</b></td>
+                            <td><b>2+</b></td>
+                            <td><b>10</b></td>
+                            <td><b>-3</b></td>
+                            <td><b>3</b></td>
+                            <td style="font-size: 18px;"><b>Devastating Wounds</b><i>: 6 wound-roll: no saving throws
+                                    (no
+                                    invuln)</i></td>
+                        </tr>
+                    </table>
+                    <table style="width:100%">
+                        <tr bgColor="#f5f5f5">
+                            <th style="width:20%">Abilities</th>
+                            <th style="width:5%">Type</th>
+                            <th style="width:75%">Description</th>
+                        </tr>
+                        <tr>
+                            <td class="profile-name">Deep Strike</td>
+                            <td>
+                                <p>Rule</p>
+                            </td>
+                            <td>
+                                <p style="font-size: 18px;">During the Declare Battle Formations step, if
+                                    every model in a unit
+                                    has this ability, you
+                                    can set it up in Reserves instead of setting it up on the battlefield. If you do, in
+                                    the
+                                    Reinforcements step of one of your <mark
+                                        style="background:#c9ff94!important">Movement
+                                        phase</mark>s you can set up this unit anywhere on the battlefield that is more
+                                    than
+                                    9" horizontally away from all enemy models. (10th Edition Core Rules p39)</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="profile-name">Icon of Obstinacy</td>
+                            <td>
+                                <p>Ability</p>
+                            </td>
+                            <td>
+                                <p style="font-size: 18px;">While this model is leading a unit, each&#160;time an attack
+                                    targets
+                                    that unit, if the
+                                    Strength characteristic&#160;of that attack is greater than or equal to the
+                                    Toughness&#160;characteristic of that unit, subtract 1 from the Wound roll.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="profile-name">Rampart</td>
+                            <td>
+                                <p>Ability</p>
+                            </td>
+                            <td>
+                                <p style="font-size: 18px;"><mark style="background:#dcadff!important">Once per
+                                        battle</mark>,
+                                    at the start of any
+                                    phase, this&#160;model can use this ability. If it does, until the end of
+                                    the&#160;phase, this model has a 2+ <mark
+                                        style="background:#a3d1ff!important">invulnerable
+                                        save</mark>.</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr bgColor="#f5f5f5">
+                            <th>Leader</th>
+                        <tr>
+                            <td style="font-size: 18px;">This model can be attached to the following units:&#9632; Relic
+                                Terminator Squad&#9632;
+                                Terminator Assault Squad&#9632; Terminator Squad</td>
+                        </tr>
+                    </table>
+                    <div><!-- Darnath Lysander INFO --></div>
+                </div>
+            </div>
+        </li>
+    </ul>
+
 </body>
 
 </html>

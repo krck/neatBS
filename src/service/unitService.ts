@@ -61,7 +61,7 @@ export class UnitService {
             comp: "",
             categories: "",
             psycher: "",
-            invulnSave: "",
+            invulnSave: { inv: "", info: "" },
             damaged: "",
             leaderInfo: "",
             transportInfo: "",
@@ -182,7 +182,14 @@ export class UnitService {
                         continue;
 
                     if (name.startsWith("Invulnerable Save")) {
-                        unit.invulnSave = getCleanString(row[1]["#text"] ?? row[1]);
+                        let invText = getCleanString(row[1]["#text"] ?? row[1]);
+                        if (invText.length > 2) {
+                            const number = invText.replace(/\D/g, ' ').trimStart().split(' ', 2)[0];
+                            const info = (invText.includes("*") ? invText.split('*')[1] : invText).trim();
+                            unit.invulnSave = { inv: (number + "+"), info: info };
+                        } else {
+                            unit.invulnSave = { inv: invText, info: "" };
+                        }
                     } else if (name.startsWith("Damaged:")) {
                         unit.damaged = getCleanString(row[1]["#text"] ?? row[1]);
                     } else if (name === "Leader") {

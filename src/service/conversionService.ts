@@ -72,7 +72,7 @@ export class ConversionService {
             for (const wa of weaponAbilities) {
                 const waIndex = unit.abilities.findIndex(a =>
                     a.name.startsWith(wa[0])
-                    || a.name.startsWith("Melta ")
+                    || a.name.startsWith("Melta")
                     || a.name.startsWith("Rapid Fire")
                     || a.name.startsWith("Sustained Hits")
                     || a.name.startsWith("Anti-")
