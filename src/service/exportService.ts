@@ -11,7 +11,7 @@ export class ExportService {
     public convertDataToHtml(rules: { army: Rule, detachment: Rule, points: string }, units: Unit[]): string {
         try {
             const htmlLines = new Array<string>();
-            const fullCSS = "@font-face{font-family:'Conduit';src:url('fonts/Conduit ITC Regular.otf') format('opentype');font-weight:normal;font-style:normal}@font-face{font-family:'Conduit';src:url('fonts/Conduit ITC Bold.otf') format('opentype');font-weight:bold;font-style:normal}@font-face{font-family:'Conduit';src:url('fonts/Conduit ITC Italic.otf') format('opentype');font-weight:normal;font-style:italic}body{margin:0 0 0 10px;padding:0;border-width:0;font-family:Conduit;font-weight:normal;font-size:18px !important}body ul{margin:0 0 0 10px;padding:0;border-width:0;list-style-image:none;list-style-position:outside;list-style-type:none}.datacard{height:675px;width:1400px;margin:20px 0;padding:0;border-width:5px;border-radius:4px;border-style:solid}.datacard-header{position:relative;width:auto;border-top:10px solid #d8d8d8;overflow:hidden}.datacard-header span{display:inline-block;background:#d8d8d8;width:900px;margin-top:-10px;padding:0 10px}.datacard-header span::before{content:'';position:absolute;width:130%;height:100%;background:#d8d8d8;z-index:-1;transform:rotate(-45deg)}.datacard-header-title{margin:0;font-size:46px;font-weight:bold}.datacard-header-category{font-style:italic;margin:0;padding:0}.datacard-header-stats{display:flex;justify-content:flex-start;margin-top:15px;margin-left:10px}.datacard-header-stats-item{text-align:center;margin-right:10px}.datacard-header-stats-item .value{border:4px solid #000000;margin-top:-26px;padding-top:14px;height:34x;width:48px;border-radius:5px;background:white;font-weight:bolder;font-size:32px}.datacard-content{margin:0;padding: 0px 10px 10px 10px;}.datacard-content p{margin:0;padding:0}.datacard-content table{margin:10px 0 0;padding:0;page-break-inside:avoid;border-collapse:collapse;color:#444444}.datacard-content tr{border-width:1px;border-style:solid;border-color:#969696}.datacard-content th{padding:4px;font-weight:bold;text-align:left}.datacard-content td{padding:4px;text-align:left}tbody tr td:first-child{min-width:200px;word-break:break-all}.datacard-content td.profile-name{font-weight:bold}";
+            const fullCSS = "@font-face{font-family:'Conduit';src:url('fonts/Conduit ITC Regular.otf') format('opentype');font-weight:normal;font-style:normal}@font-face{font-family:'Conduit';src:url('fonts/Conduit ITC Bold.otf') format('opentype');font-weight:bold;font-style:normal}@font-face{font-family:'Conduit';src:url('fonts/Conduit ITC Italic.otf') format('opentype');font-weight:normal;font-style:italic}body{margin:0 0 0 10px;padding:0;border-width:0;font-family:Conduit;font-weight:normal;font-size:18px !important}body ul{margin:0 0 0 10px;padding:0;border-width:0;list-style-image:none;list-style-position:outside;list-style-type:none}.datacard{height:675px;width:1400px;margin:20px 0;padding:0;border-width:5px;border-radius:4px;border-style:solid}.armycard{height:auto;width: 1380px !important;margin:20px 0;padding:10px;border-width:5px;border-radius:4px;border-style:solid}.datacard-header{position:relative;width:auto;border-top:10px solid #d8d8d8;overflow:hidden}.datacard-header span{display:inline-block;background:#d8d8d8;width:900px;margin-top:-10px;padding:0 10px}.datacard-header span::before{content:'';position:absolute;width:130%;height:100%;background:#d8d8d8;z-index:-1;transform:rotate(-45deg)}.datacard-header-title{margin:0;font-size:46px;font-weight:bold}.datacard-header-category{font-style:italic;margin:0;padding:0}.datacard-header-stats{display:flex;justify-content:flex-start;margin-top:15px;margin-left:10px}.datacard-header-stats-item{text-align:center;margin-right:10px}.datacard-header-stats-item .value{border:4px solid #000000;margin-top:-26px;padding-top:14px;height:34x;width:48px;border-radius:5px;background:white;font-weight:bolder;font-size:32px}.datacard-content{margin:0;padding:0 10px 10px}p{margin:0;padding:0}table{margin:10px 0 0;padding:0;page-break-inside:avoid;border-collapse:collapse;color:#444444}tr{border-width:1px;border-style:solid;border-color:#969696}th{padding:4px;font-weight:bold;text-align:left}td{padding:4px;text-align:left}tbody tr td:first-child{min-width:200px;word-break:break-all}td.profile-name{font-weight:bold}";
             htmlLines.push(`<!DOCTYPE html><html><head><style>${fullCSS}</style></head><body><ul>`);
             for (const unit of units) {
                 if (unit.stats.length !== 1)
@@ -118,29 +118,40 @@ export class ExportService {
                 </li>`);
             }
 
-            // // Final DataCard with Army Comp
-            // htmlLines.push("<br><li class=\"armyListing\">");
-            // htmlLines.push(`<h3 style=\"margin-top: 10px\">Army Details - ${rules.points}</h3>`);
-
-            // htmlLines.push("<table style=\"width:100%;\">");
-            // htmlLines.push(`<tr bgColor=\"#D8D8D8\"><th>Type</th><th>Rule Name</th><th>Info</th></tr>`);
-            // htmlLines.push(`<tr><td>Army</td><td>${rules.army.name}</td><td>${rules.army.text}</td></tr>`);
-            // htmlLines.push(`<tr><td>Detachment</td><td>${rules.detachment.name}</td><td>${rules.detachment.text}</td></tr>`);
-            // htmlLines.push("</table>");
-
-            // htmlLines.push("<table style=\"width:100%\"><tr bgColor=\"#D8D8D8\"><th style=\"width:5%\">Type</th><th style=\"width:25%\">Name</th><th style=\"width:10%\">Pwr/Pts</th><th style=\"width:60%\">Composition</th></tr>");
-            // for (const unit of units) {
-            //     const selections = unit.selections.map(s => `<li>- ${s.name}: ${s.info}</li>`).join("");
-            //     htmlLines.push(`<tr><td class="profile-name">${unit.role}</td><td><p>${unit.name}</p></td><td><p>${unit.pts}pts</p></td><td><ul>${selections}</ul></td></tr>`);
-            // }
-            // htmlLines.push("</li>");
+            // Final DataCard with Army Comp
+            htmlLines.push(`
+                <li class="armycard">
+                    <h2 style="margin-top: 10px">Army Details - ${rules.points}</h2>
+                    <table style="width:100%;">
+                        <tr bgcolor="#D8D8D8"><th>Type</th><th>Rule Name</th><th>Info</th></tr>
+                        <tr><td>Army</td><td>${rules.army.name}</td><td>${rules.army.text}</td></tr>
+                        <tr><td>Detachment</td><td>${rules.detachment.name}</td><td>${rules.detachment.text}</td></tr>
+                    </table>
+                    <table style="width:100%">
+                        <tr bgcolor="#D8D8D8">
+                            <th style="width:5%">Type</th>
+                            <th style="width:25%">Name</th>
+                            <th style="width:10%">Pwr/Pts</th>
+                            <th style="width:60%">Composition</th>
+                        </tr>
+                        ${units.map(unit => {
+                const selections = unit.selections.map(s => `<li>- ${s.name}: ${s.info}</li>`).join("");
+                return `<tr>
+                                <td class="profile-name">${unit.role}</td>
+                                <td><p>${unit.name}</p></td>
+                                <td><p>${unit.pts}pts</p></td>
+                                <td><ul style="font-size: 16px;">${selections}</ul></td>
+                            </tr>`;
+            }).join("")}
+                    </table>
+                </li>
+            `);
 
             htmlLines.push("</ul></body></html>");
-
             return minify(htmlLines.join(""), {
                 collapseWhitespace: true,
-                removeComments: true,
-                removeOptionalTags: true,
+                removeComments: false,
+                removeOptionalTags: false,
             });
         } catch (error) {
             throw new Error(`[CONVERSION]: Error converting units to html: ${error}`);
